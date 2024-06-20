@@ -1,0 +1,9 @@
+Analizando las instrucciones, podemos resumir los pasos PRINCIPALES a **5**:
+
+1. **Configuración Inicial:** Preparar las variables de entorno y autenticarse.
+2. **Crear bucket en Cloud Storage:** Crear el espacio para alojar el archivo.
+3. **Crear dataset en BigQuery:**  Crear el dataset que contendrá la tabla de datos.
+4. **Crear y desplegar la Cloud Function:**  Escribir el código, configurar el entorno y desplegar la función que procesará el archivo.
+5. **Prueba del flujo:** Subir un archivo y verificar que todo el proceso funciona.
+
+Por lo tanto, la respuesta es **5**. 

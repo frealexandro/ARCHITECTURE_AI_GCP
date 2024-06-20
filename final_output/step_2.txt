@@ -1,0 +1,3 @@
+```bash
+gsutil mb -l $LOCATION gs://$BUCKET_NAME
+```

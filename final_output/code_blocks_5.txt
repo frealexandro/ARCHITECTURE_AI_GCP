@@ -1,0 +1,1 @@
+['gcloud functions deploy procesar_excel \\\n--runtime python38 \\\n--trigger-resource gs://<nombre_del_bucket> \\\n--trigger-event google.storage.object.finalize \\\n--source . \\\n--entry-point procesar_excel']

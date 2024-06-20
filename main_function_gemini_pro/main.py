@@ -6,6 +6,8 @@ import vertexai
 from vertexai.generative_models import GenerativeModel,Part
 import re
 import os
+from cloud_storage import CloudStorageManager
+
 
 
 #all: Ruta al archivo de clave de la cuenta de servicio
@@ -25,8 +27,19 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
 
 def run ():
 
+    #!################################################################
+    #!inicio del primer prompt para la descripcion de la arquitectura
     
-    pass
+    # all: Crear un objeto de la clase CloudStorageManager
+    cloud_storage_manager = CloudStorageManager()
+
+    # all: leer el archivo de la primera arquitectura
+    path_image = "gemini_pro_competition/images/arquitectura_inicial.png"
+
+    # all: usar el metodo upload_blob para subir un archivo a un bucket
+    cloud_storage_manager.upload_blob("gemini_pro", path_image , 'arquitectura_inicial.png' )
+
+    
 
 
 if __name__ == "__main__":

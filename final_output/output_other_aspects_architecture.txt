@@ -1,0 +1,30 @@
+## Información extraída del texto:
+
+**Prerrequisitos:**
+
+* **Proyecto GCP:** Tener un proyecto creado en Google Cloud Platform.
+* **Cuenta de servicio:** Una cuenta de servicio con los siguientes roles:
+    * Storage Admin (roles/storage.admin)
+    * Cloud Functions Developer (roles/cloudfunctions.developer)
+    * BigQuery Data Editor (roles/bigquery.dataEditor)
+* **Google Cloud SDK:** Tener instalado y configurado el SDK de Google Cloud en tu máquina local ([https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)).
+* **Archivo JSON de credenciales:** Un archivo JSON con las credenciales de la cuenta de servicio.
+
+**Recomendaciones:**
+
+* **Nombre único para recursos:** Usa nombres únicos para tu bucket, función, dataset y tabla.
+* **Control de versiones:** Implementa control de versiones para tu código de Cloud Function.
+* **Manejo de errores:** Incluye manejo de errores en tu código de Cloud Function para casos como archivos inválidos o errores de conexión a BigQuery.
+
+**Posibles errores:**
+
+* Permisos insuficientes en la cuenta de servicio.
+* Errores de sintaxis en el código de la función.
+* Problemas de conexión con BigQuery.
+* Formato de archivo inválido.
+
+**Testing:**
+
+* **Número de columnas:** Sube archivos con diferente número de columnas para validar que el código de validación funciona correctamente.
+* **Tipos de datos:** Prueba con diferentes tipos de datos en el archivo Excel para asegurarte de que se manejan correctamente.
+* **Volumen de datos:** Sube archivos de diferentes tamaños para evaluar el rendimiento del flujo. 

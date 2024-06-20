@@ -1,0 +1,1 @@
+['bq --location=$LOCATION mk --dataset $PROJECT_ID:$DATASET_ID']
