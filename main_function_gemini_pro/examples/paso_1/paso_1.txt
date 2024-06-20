@@ -1,0 +1,14 @@
+
+**1. Configuración Inicial:**
+
+1.1. **Autenticación:** Inicia sesión en tu cuenta de GCP desde la terminal.
+
+```bash
+gcloud auth login
+```
+
+1.2. **Selecciona el proyecto:**  Selecciona el proyecto en el que deseas trabajar.
+
+```bash
+gcloud config set project datalake-analytics-339922
+```

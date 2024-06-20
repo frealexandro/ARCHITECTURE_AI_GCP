@@ -1,0 +1,26 @@
+## Información extraída del texto:
+
+**Prerrequisitos:**
+
+1. **Cuenta de Google Cloud Platform:** Con una cuenta activa y un proyecto creado.
+2. **Google Cloud SDK:** Instalada y configurada en tu máquina local. [https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)
+3. **Servicio de cuentas:** Con roles que permitan interactuar con Cloud Storage, Cloud Functions y BigQuery.  Te recomiendo "Storage Admin", "Cloud Functions Developer" y "BigQuery Admin" para este tutorial.
+4. **Archivo Excel:** Con los datos que deseas cargar a BigQuery.
+
+**Recomendaciones:**
+
+* **Organización de archivos:** Es recomendable crear carpetas dentro del bucket para organizar los archivos de entrada, salida y código.
+* **Manejo de errores:** Implementa un control de errores en tu código Python para registrar errores en Cloud Logging.
+* **Pruebas:** Realiza pruebas unitarias y de integración para validar el correcto funcionamiento del flujo de datos.
+
+**Posibles errores:**
+
+* **Permisos insuficientes:** Asegúrate de que la cuenta de servicio tenga los permisos necesarios para cada servicio.
+* **Dependencias faltantes:** Verifica que las bibliotecas Python necesarias estén incluidas en el archivo `requirements.txt`.
+* **Errores en el código:** Depura el código Python para identificar y corregir errores en la lógica o en la sintaxis.
+* **Límites de cuota:** Ten en cuenta los límites de cuota de Cloud Functions y BigQuery.
+
+**Testing:**
+
+* **Verifica en Cloud Logging:** Revisa los logs de la función para detectar errores.
+* **Consulta la tabla en BigQuery:** Ejecuta una consulta SQL en BigQuery para verificar que los datos se hayan cargado correctamente. 

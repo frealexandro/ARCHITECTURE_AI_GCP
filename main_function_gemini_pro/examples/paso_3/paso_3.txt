@@ -1,0 +1,74 @@
+**3. Cloud Functions:**
+
+3.1. **Crea un directorio para la función:**
+
+```bash
+mkdir bucket_experiment
+cd bucket_experiment
+```
+
+3.2. **Crea un archivo `main.py`:**
+
+```python
+from google.cloud import bigquery
+from google.cloud import storage
+import pandas as pd
+import os
+
+PROJECT_ID = os.environ['GCP_PROJECT'] # Obtiene el ID del proyecto automáticamente
+DATASET_ID = 'experiment'
+TABLE_ID = 'tabla_experiment'
+
+def process_excel(event, context):
+    # Obtiene la información del archivo subido
+    file = event
+    bucket_name = file['bucket']
+    file_name = file['name']
+
+    # Descarga el archivo Excel de Cloud Storage
+
+    route = "gs://{0}/{1}".format(bucket_name, filename)
+
+    # Lee el archivo Excel con pandas
+    df = pd.read_excel('route')
+
+    # Realiza la validación de las columnas (ejemplo: verifica si hay 82 columnas)
+    if len(df.columns) != 82:
+        raise ValueError(f"Número de columnas incorrecto: {len(df.columns)}")
+
+    # Configura el cliente de BigQuery
+    bq_client = bigquery.Client(project=PROJECT_ID)
+
+    # Define el esquema de la tabla de destino (opcional)
+    # Puedes omitir esta parte si la tabla ya existe con el esquema correcto
+    table_ref = bq_client.dataset(DATASET_ID).table(TABLE_ID)
+    job_config = bigquery.LoadJobConfig()
+    # Define el esquema aquí (ver documentación de BigQuery)
+
+    # Carga los datos en BigQuery
+    job = bq_client.load_table_from_dataframe(
+        df, table_ref, job_config=job_config
+    )
+    job.result()  # Espera a que la carga se complete
+
+    print(f"Archivo {file_name} procesado y cargado en BigQuery.")
+```
+
+3.3. **Crea un archivo `requirements.txt` con las distintas dependencias:**
+
+```bash
+echo -e "google-cloud-bigquery\ngoogle-cloud-storage\npandas\nopenpyxl" > requirements.txt
+```
+
+
+3.4. **Despliega la función:**
+
+```bash
+gcloud functions deploy bucket_experiment \
+  --runtime python39 \
+  --trigger-resource gs://bucket_experiment \
+  --trigger-event google.storage.object.finalize \
+  --source .
+```
+
+Reemplaza `<NOMBRE_DE_LA_FUNCION>` con el nombre que desees. Este comando creará la función de Cloud Function y configurará un disparador para que se ejecute cada vez que se cargue un archivo en el bucket.

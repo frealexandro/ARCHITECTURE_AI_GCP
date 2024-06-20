@@ -1,0 +1,9 @@
+En este caso, el texto ofrece una guía con varios sub-pasos, pero si nos centramos en los pasos PRINCIPALES que describen la construcción del flujo de datos, podemos identificar **5 acciones principales**:
+
+1. **Configuración Inicial:**  Preparar el entorno de Google Cloud.
+2. **Cloud Storage:** Crear un bucket y subir el archivo Excel. 
+3. **Cloud Functions:**  Escribir, configurar y desplegar la función que procesará los datos.
+4. **BigQuery:** Crear el dataset en BigQuery que almacenará los datos.
+5. **Prueba del Flujo:** Probar el funcionamiento del proceso completo. 
+
+Por lo tanto, la respuesta es **5**. 

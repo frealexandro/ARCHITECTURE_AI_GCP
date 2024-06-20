@@ -1,0 +1,25 @@
+**4. BigQuery:**
+
+4.1 **Crea un dataset:** Si aún no lo tienes, crea un dataset en BigQuery para almacenar la tabla.
+
+```bash
+bq --location=us-central1 mk experiment
+```
+
+4.2 **Crea una tabla: en blanco**
+
+4.2.1 **Crea un archivo en blanco para definir el esquema en blanco**
+
+```bash
+touch schema.json
+```
+
+4.2 **Crea una tabla con esquema en blanco**
+
+```bash
+bq mk --table \
+  experiment.tabla_experiment \
+  schema.json
+```
+
+Reemplaza `<UBICACION_DEL_DATASET>` con la ubicación del dataset (ej: `US`) y `<NOMBRE_DEL_DATASET>` con el nombre del dataset.
