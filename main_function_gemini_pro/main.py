@@ -16,3 +16,18 @@ key_path = "/home/frealexandro/proyectos_personales/gemini_pro_competition/keys/
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
 
 
+#* ejemplo de como se puede inicializar el proyecto y la ubicacion con las credenciales de la cuenta de servicio
+# vertexai.init(project="datalake-analytics-339922", location="us-central1", credentials=credentials)
+
+
+
+
+
+def run ():
+
+    
+    pass
+
+
+if __name__ == "__main__":
+    run ()
