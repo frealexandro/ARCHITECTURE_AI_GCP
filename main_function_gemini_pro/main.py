@@ -61,60 +61,21 @@ def run ():
     # all: Crear un objeto de la clase PromptTemplate
     prompt_template = PromptTemplate()
 
-    
-    #all:  Definimos los pasos de la cadena de operaciones
-    generate_description_image_step = SimpleChain(
-    input_variables=["prompt_1", "prompt_2", "name_image"],
-    output_variables=["output_description_architecture"],
-    chain_function=gemini_operations.generate_description_image_chain
-)
-
-    generate_count_steps_step = SimpleChain(
-    input_variables=["prompt", "output_description_architecture", "example_input_description_architecture", "example_input_num_steps_architecture"],
-    output_variables=["steps_new_flow"],
-    chain_function=gemini_operations.generate_count_steps_chain
-)
-
-    get_aspects_step = SimpleChain(
-    input_variables=["prompt_aspects", "output_description_architecture", "example_input_description_architecture", "example_input_aspects_architecture"],
-    output_variables=["other_aspects"],
-    chain_function=gemini_operations.get_aspects_chain
-)
-
-    extract_step_step = SimpleChain(
-    input_variables=["prompt", "output_description_architecture", "num_paso"],
-    output_variables=["step"],
-    chain_function=gemini_operations.extract_step_chain
-)
-
-# Create the final chain
-final_chain = SimpleChain(
-    steps=[
-        generate_description_image_step,
-        generate_count_steps_step,
-        get_aspects_step,
-        extract_step_step
-    ]
-)
-
-# Run the chain
-output_description_architecture = final_chain.run({
-    "prompt_1": template_primer_prompt_extraer_descripcion,
-    "prompt_2": template_segundo_prompt_extraer_descripcion,
-    "name_image": "arquitectura_inicial.png",
-    "prompt": template_segundo_prompt,
-    "example_input_description_architecture": example_input_description_architecture,
-    "example_input_num_steps_architecture": example_input_num_steps_architecture,
-    "prompt_aspects": template_tercer_prompt,
-    "example_input_aspects_architecture": example_input_aspects_architecture,
-    "num_paso": 1  # This will need to be looped as per your logic
-})
-
-print(output_description_architecture)
+    #all :leer descripcion de la arquitectura de ejemplo 
+    with open('/home/frealexandro/projects/Notebooks_2024/GEN_GCP_AI/competition_gemini_pro/examples/general_flow/example_input_description_architecture.txt', 'r') as f:
+       exmaple_input_architecture = f.read()
 
     
-
+    #all: funcion para generar la descripcion de la imagen de la arquitectura inicial con gemini
+    output_description_architecture = gemini_operations.generate_description_image (prompt_template.template_primer_prompt_extraer_descripcion ,
+                                                                 prompt_template.template_segundo_prompt_extraer_descripcion ,
+                                                                 'arquitectura_inicial.png' )
     
+    #all :guardar la descripcion de la arquitectura de salida
+    with open('/home/frealexandro/projects/Notebooks_2024/GEN_GCP_AI/competition_gemini_pro/final_output/output_description_architecture.txt', 'w') as f:
+      f.write(output_description_architecture)
+
+    print("el primer prompt fue generado correctamente")
 
 
 if __name__ == "__main__":
