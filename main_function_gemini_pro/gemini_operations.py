@@ -11,7 +11,7 @@ class GeminiOperations:
 
 
     #all: Metodo para generar la descripcion de una imagen
-    def generate_description_image_chain(self, prompt_1, prompt_2, name_image):
+    def generate_description_image(self, prompt_1, prompt_2, name_image):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
 
@@ -29,7 +29,9 @@ class GeminiOperations:
 
 
     #all: Metodo para extraer la descripcion de un paso
-    def generate_count_steps_chain(self, prompt, output_description_architecture, example_input_description_architecture, example_input_num_steps_architecture):
+    def generate_count_steps(self, prompt, output_description_architecture,
+                            example_input_description_architecture, 
+                             example_input_num_steps_architecture):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
             
@@ -49,7 +51,7 @@ class GeminiOperations:
 
 
     #all: Metodo para extraer los aspectos de una arquitectura
-    def get_aspects_chain(self, prompt_aspects, output_description_architecture, example_input_description_architecture, example_input_aspects_architecture):
+    def get_aspects(self, prompt_aspects, output_description_architecture, example_input_description_architecture, example_input_aspects_architecture):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
 
@@ -70,7 +72,7 @@ class GeminiOperations:
 
 
     #all: Metodo para extraer un paso de una arquitectura
-    def extract_step_chain(self, prompt, output_description_architecture, num_paso):
+    def extract_step(self, prompt, output_description_architecture, num_paso):
         final_prompt = prompt.format(output_description_architecture=output_description_architecture, num_paso=num_paso)
         try:
 
