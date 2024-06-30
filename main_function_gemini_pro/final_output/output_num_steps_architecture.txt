@@ -1,9 +1,11 @@
-Analizando las instrucciones, podemos resumir los pasos PRINCIPALES a **5**:
+Los pasos PRINCIPALES que describen la construcción del flujo de datos en el segundo ejemplo siguen siendo los mismos que en el primero, a pesar de tener más detalles e información adicional.  
 
-1. **Configuración Inicial:** Preparar las variables de entorno y autenticarse.
-2. **Crear bucket en Cloud Storage:** Crear el espacio para alojar el archivo.
-3. **Crear dataset en BigQuery:**  Crear el dataset que contendrá la tabla de datos.
-4. **Crear y desplegar la Cloud Function:**  Escribir el código, configurar el entorno y desplegar la función que procesará el archivo.
-5. **Prueba del flujo:** Subir un archivo y verificar que todo el proceso funciona.
+Por lo tanto, la respuesta también es **5**. 
 
-Por lo tanto, la respuesta es **5**. 
+Los pasos principales siguen siendo:
+
+1. **Configuración Inicial:** Preparación del entorno.
+2. **Cloud Storage:** Creación del bucket y subida del archivo.
+3. **Cloud Functions:** Desarrollo, configuración y despliegue de la función.
+4. **BigQuery:** Creación del dataset para almacenar los datos.
+5. **Prueba del Flujo:** Verificación del funcionamiento del proceso completo. 

@@ -29,41 +29,28 @@ class GeminiOperations:
 
 
     #all: Metodo para extraer la descripcion de un paso
-    def generate_count_steps(self, prompt, output_description_architecture,
-                            example_input_description_architecture, 
-                             example_input_num_steps_architecture):
+    def generate_count_steps(self, final_prompt):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
             
             model = GenerativeModel(self.model)
 
-            final_prompt = prompt.format(
-                output_description_architecture=output_description_architecture,
-                example_input_description_architecture=example_input_description_architecture,
-                example_input_num_steps_architecture=example_input_num_steps_architecture
-            )
-
             response = model.generate_content([final_prompt])
+
             return response.text
         except Exception as e:
             print(f"Error al encontrar el número de pasos en {final_prompt}: {str(e)}")
+
             return ""
 
 
     #all: Metodo para extraer los aspectos de una arquitectura
-    def get_aspects(self, prompt_aspects, output_description_architecture, example_input_description_architecture, example_input_aspects_architecture):
+    def get_aspects(self, final_prompt):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
 
             model = GenerativeModel(self.model)
 
-
-            final_prompt = prompt_aspects.format(
-                output_description_architecture=output_description_architecture,
-                example_input_description_architecture=example_input_description_architecture,
-                example_input_aspects_architecture=example_input_aspects_architecture
-            )
-            
             response = model.generate_content([final_prompt])
             return response.text
         except Exception as e:
@@ -72,8 +59,8 @@ class GeminiOperations:
 
 
     #all: Metodo para extraer un paso de una arquitectura
-    def extract_step(self, prompt, output_description_architecture, num_paso):
-        final_prompt = prompt.format(output_description_architecture=output_description_architecture, num_paso=num_paso)
+    def extract_step(self, final_prompt):
+
         try:
 
             vertexai.init(project="datalake-analytics-339922", location="us-central1")

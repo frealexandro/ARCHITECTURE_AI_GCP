@@ -38,13 +38,17 @@ gcloud auth login
 gcloud config set project <TU_ID_DE_PROYECTO> 
 ```
 
+Reemplaza `<TU_ID_DE_PROYECTO>` con el ID de tu proyecto de GCP.
+
 **2. Cloud Storage:**
 
-2.1 **Crea un bucket:**  Crea un bucket para almacenar el archivo Excel y el código de la función. Reemplaza `<NOMBRE_DEL_BUCKET>` con un nombre único.
+2.1 **Crea un bucket:**  Crea un bucket para almacenar el archivo Excel y el código de la función.
 
 ```bash
 gsutil mb -l us-central1 gs://<NOMBRE_DEL_BUCKET>
 ```
+
+Reemplaza `<NOMBRE_DEL_BUCKET>`  con el nombre que deseas para tu bucket.  Recuerda que el nombre del bucket debe ser único a nivel global en GCP. 
 
 **3. Cloud Functions:**
 
@@ -52,10 +56,15 @@ gsutil mb -l us-central1 gs://<NOMBRE_DEL_BUCKET>
 
 ```bash
 mkdir <NOMBRE_DE_LA_FUNCION>
+```
+
+```bash
 cd <NOMBRE_DE_LA_FUNCION>
 ```
 
-3.2. **Crea un archivo `main.py`:** Reemplaza `<NOMBRE_DEL_BUCKET>`, `<NOMBRE_DEL_DATASET>` y `<NOMBRE_DE_LA_TABLA>` con los nombres que elegiste.
+Reemplaza `<NOMBRE_DE_LA_FUNCION>` con el nombre que desees para tu función.
+
+3.2. **Crea un archivo `main.py`:**
 
 ```python
 from google.cloud import bigquery
@@ -63,65 +72,61 @@ from google.cloud import storage
 import pandas as pd
 import os
 
-PROJECT_ID = os.environ['GCP_PROJECT'] 
-BUCKET_NAME = '<NOMBRE_DEL_BUCKET>' 
-DATASET_ID = '<NOMBRE_DEL_DATASET>'
-TABLE_ID = '<NOMBRE_DE_LA_TABLA>'
+# Configura las variables de entorno
+PROJECT_ID = os.environ['GCP_PROJECT'] # Se obtiene automáticamente en Cloud Functions
+BUCKET_NAME = '<NOMBRE_DEL_BUCKET>' # Reemplaza con el nombre de tu bucket
+DATASET_ID = 'experiment'
+TABLE_ID = 'tabla_experiment'
 
 def process_excel(event, context):
-    """Cloud Function triggered by Cloud Storage events.
-
-    Args:
-        event (dict):  The dictionary with data specific to this type of event.
-                      The `data` field contains a description of the event in
-                      the Cloud Storage bucket.
-        context (google.cloud.functions.Context): Metadata of triggering event.
-
     """
+    Función activada por Cloud Storage al subir un archivo.
+    Procesa el archivo Excel y carga los datos en BigQuery.
+    """
+
+    # Obtiene información del archivo
     file = event
     file_name = file['name']
 
-    # Crea un cliente de Cloud Storage
+    # Ruta completa del archivo en Cloud Storage
+    gcs_uri = f'gs://{BUCKET_NAME}/{file_name}'
+
+    # Descarga el archivo Excel de Cloud Storage
     storage_client = storage.Client()
-
-    # Obtén el bucket y el blob (archivo)
-    bucket = storage_client.bucket(BUCKET_NAME)
+    bucket = storage_client.get_bucket(BUCKET_NAME)
     blob = bucket.blob(file_name)
-
-    # Descarga el contenido del blob a un archivo temporal
-    temp_file_path = f"/tmp/{file_name}"
-    blob.download_to_filename(temp_file_path)
+    blob.download_to_filename('/tmp/archivo.xlsx')
 
     # Lee el archivo Excel con pandas
-    df = pd.read_excel(temp_file_path)
+    df = pd.read_excel('/tmp/archivo.xlsx')
 
     # Realiza la validación de las columnas (ejemplo: verifica si hay 82 columnas)
     if len(df.columns) != 82:
         raise ValueError(f"Número de columnas incorrecto: {len(df.columns)}")
 
     # Configura el cliente de BigQuery
-    bq_client = bigquery.Client(project=PROJECT_ID)
+    bq_client = bigquery.Client()
 
-    # Define la referencia a la tabla de destino
-    table_ref = bq_client.dataset(DATASET_ID).table(TABLE_ID)
+    # Define el esquema de la tabla de destino (opcional)
+    # Puedes omitir esta parte si la tabla ya existe con el esquema correcto
+    # table_ref = bq_client.dataset(DATASET_ID).table(TABLE_ID)
+    # job_config = bigquery.LoadJobConfig()
+    # # Define el esquema aquí (ver documentación de BigQuery)
 
-    # Configura la carga de datos
+    # Carga los datos en BigQuery desde el DataFrame
+    table_ref = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
     job_config = bigquery.LoadJobConfig(
         source_format=bigquery.SourceFormat.EXCEL,
-        autodetect=True,  # Detecta automáticamente el esquema
+        autodetect=True  # Detecta el esquema automáticamente
     )
-
-    # Carga los datos en BigQuery
-    with open(temp_file_path, 'rb') as source_file:
-        job = bq_client.load_table_from_file(
-            source_file,
-            table_ref,
-            job_config=job_config,
-        )
+    job = bq_client.load_table_from_dataframe(
+        df, table_ref, job_config=job_config
+    )
     job.result()  # Espera a que la carga se complete
 
-    print(f"Archivo {file_name} procesado y cargado en BigQuery.")
+    print(f"Archivo {file_name} procesado y cargado en BigQuery en {table_ref}.")
 ```
+
 
 3.3. **Crea un archivo `requirements.txt`:**
 
@@ -132,31 +137,45 @@ pandas
 openpyxl
 ```
 
-3.4. **Despliega la función:** Reemplaza `<NOMBRE_DE_LA_FUNCION>` con el nombre que desees para tu función.
+3.4. **Despliega la función:**
 
 ```bash
 gcloud functions deploy <NOMBRE_DE_LA_FUNCION> \
   --runtime python39 \
   --trigger-resource gs://<NOMBRE_DEL_BUCKET> \
   --trigger-event google.storage.object.finalize \
-  --source .
+  --source . \
+  --entry-point process_excel \
+  --region us-central1 
 ```
-
 
 **4. BigQuery:**
 
-4.1 **Crea un dataset:** 
+4.1 **Crea un dataset:** Si aún no lo tienes, crea un dataset en BigQuery para almacenar la tabla.
 
 ```bash
-bq --location=us-central1 mk <NOMBRE_DEL_DATASET>
+bq --location=us-central1 mk experiment
 ```
 
-4.2 **Crea una tabla (opcional):** Puedes crear una tabla vacía con el esquema definido previamente si lo prefieres. De lo contrario, BigQuery infiere el esquema del archivo Excel.
+4.2 **Crea una tabla:** en blanco (opcional, la función puede crearla automáticamente)
 
+4.2.1 **Crea un archivo en blanco para definir el esquema en blanco (opcional)**
+
+```bash
+touch schema.json
+```
+
+4.2.2 **Crea una tabla con esquema en blanco (opcional)**
+
+```bash
+bq mk --table \
+  experiment.tabla_experiment \
+  schema.json
+```
 
 **5. Prueba del Flujo:**
 
-Sube un archivo Excel llamado "archivo_1.xlsx" al bucket:
+Sube un nuevo archivo Excel al bucket. La función de Cloud Function se activará automáticamente, procesará el archivo y cargará los datos en la tabla de BigQuery.
 
 ```bash
 gsutil cp archivo_1.xlsx gs://<NOMBRE_DEL_BUCKET>/
@@ -164,19 +183,18 @@ gsutil cp archivo_1.xlsx gs://<NOMBRE_DEL_BUCKET>/
 
 **Testing:**
 
-* **Cloud Logging:**
-   - Ve a la consola de GCP -> Cloud Functions -> selecciona tu función -> Pestaña "Registros". 
-   - Busca mensajes de error o éxito para verificar la ejecución de la función.
-
-* **BigQuery:**
-    - Ve a la consola de GCP -> BigQuery.
-    - Busca tu dataset y tabla. 
-    - Ejecuta una consulta simple para verificar que los datos se cargaron correctamente:
-       ```sql
-       SELECT * FROM `<NOMBRE_DEL_DATASET>.<NOMBRE_DE_LA_TABLA>` LIMIT 10;
-       ```
+* **Verifica en Cloud Logging:** 
+  ```bash
+  gcloud logging read "resource.type=cloud_function AND function_name=<NOMBRE_DE_LA_FUNCION>"
+  ```
+* **Consulta la tabla en BigQuery:** 
+  ```bash
+  bq query --use_legacy_sql=false 'SELECT * FROM `<TU_ID_DE_PROYECTO>.experiment.tabla_experiment` LIMIT 10'
+  ``` 
 
 **Recuerda:**
 
-* Este código Python asume que el archivo Excel tiene un formato estándar. Ajusta el código si tu archivo tiene un formato diferente.
-* Configura alertas y monitorea el rendimiento de tu función y recursos de GCP para asegurar un funcionamiento óptimo.
+* **Seguridad:**  Utiliza el principio de mínimo privilegio al otorgar roles a la cuenta de servicio.
+* **Monitoreo:**  Configura alertas para supervisar el funcionamiento del flujo de datos.
+
+Este flujo de datos automatizado te permitirá procesar y analizar datos de archivos Excel de forma eficiente en Google Cloud Platform. 

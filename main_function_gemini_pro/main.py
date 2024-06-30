@@ -82,7 +82,7 @@ def run ():
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_description_architecture.txt', 'w') as f:
       f.write(output_description_architecture)
 
-    print("el primer prompt fue generado correctamente")
+    print("The first prompt was generated correctly")
 
     
     #!###################################################################
@@ -92,11 +92,16 @@ def run ():
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_num_steps_architecture.txt', 'r') as f:
         example_input_steps_architecture = f.read()
 
+    #all :asignacion de varaibles al prompt para contar los pasos de la arquitectura
+
+    template_segundo_prompt = prompt_template.template_segundo_prompt.format(
+                output_description_architecture = output_description_architecture,
+                example_input_description_architecture = exmaple_input_architecture,
+                example_input_num_steps_architecture = example_input_steps_architecture
+            )
+
     #all: llama la funcion de contar los pasos con gemini
-    steps_new_flow = gemini_operations.generate_count_steps(prompt_template.template_segundo_prompt ,
-                                                            output_description_architecture, 
-                                                            exmaple_input_architecture ,
-                                                            example_input_steps_architecture)
+    steps_new_flow = gemini_operations.generate_count_steps(template_segundo_prompt)
 
     #all: guardar el archivo de los pasos de salida
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_num_steps_architecture.txt', 'w') as f:
@@ -105,10 +110,10 @@ def run ():
     
     #all: extraer el numero de pasos con una funcion regex
     number_steps = re.findall(r'\d+', steps_new_flow)
-    print(f"El numero de pasos en el flujo es: {number_steps[0]}")
+    print(f"The number of flow steps are: {number_steps[0]}")
 
     
-    print("el segundo prompt fue generado correctamente")
+    print("The second prompt was generated correctly")
 
     #!###################################################################
     #!inicio del tercer prompt para obtener otros aspectos de la arquitectura en un archivo
@@ -117,18 +122,22 @@ def run ():
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_other_aspects_architecture.txt', 'r') as f:
         example_input_aspects_architecture = f.read()
 
+    #all: asignacion de varaibles al prompt para obtener otros aspectos de la arquitectura
+    template_tercer_prompt = prompt_template.template_tercer_prompt.format(
+        example_input_description_architecture = exmaple_input_architecture,
+        example_input_aspects_architecture = example_input_aspects_architecture,
+        output_description_architecture = output_description_architecture
+    )
+
 
     #all: llama la funcion de otros aspectos de la arquitectura, esto con el fin de obtener otros aspectos de la arquitectura 
-    other_aspects = gemini_operations.get_aspects(prompt_template.template_tercer_prompt,
-                                                  output_description_architecture, 
-                                                  exmaple_input_architecture,
-                                                  example_input_aspects_architecture,)
+    other_aspects = gemini_operations.get_aspects(template_tercer_prompt)
 
     #all: guardar archivo de otros aspectos de la arquitectura
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_other_aspects_architecture.txt', 'w') as f:
        f.write(other_aspects)
 
-    print("el tercer prompt fue generado correctamente")
+    print("The third prompt was generated correctly")
 
     #!#####################################################################
     #!inicio del cuarto prompt para extraer el paso exacto de las instrucciones
@@ -140,20 +149,25 @@ def run ():
         #*se depreca esta opcion debido a que no se ve util la opcion de agregar ejemplos, puede tener fallos ya que el num de ejmplo varia
         # with open(f'/home/frealexandro/projects/Notebooks_2024/GEN_GCP_AI/competition_gemini_pro/examples/paso_{i+1}/paso_{i+1}.txt', 'r') as f:
         #     example_input_paso_architecture = f.read()
+
+        #all: asignacion de varaibles al prompt para extraer el paso exacto de las instrucciones
+        template_extraer_paso = prompt_template.template_extraer_paso.format(
+            output_description_architecture = output_description_architecture,
+            num_paso = i+1
+        )
         
         #all: llama la funcion de extraer el paso exacto de las instrucciones
-        step = gemini_operations.extract_step(prompt_template.template_extraer_paso, output_description_architecture,
-                                              i+1 )
+        step = gemini_operations.extract_step(template_extraer_paso)
 
 
         #all: guardar el archivo de los pasos 
         with open(f'/home/frealexandro/projects/Notebooks_2024/GEN_GCP_AI/competition_gemini_pro/final_output/step_{i+1}.txt', 'w') as f:
             f.write(step)
 
-        print(f"se extrajo correctamente el paso:  {i+1}")
+        print(f"The flow step number {i+1} was extracted correctly")
 
 
-    print("el cuarto prompt fue generado correctamente")
+    print("The fourth prompt was generated correctly")
 
 
     #!######################################################################
@@ -183,7 +197,7 @@ def run ():
             with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/code_blocks_{i}.txt', 'w') as f:
                 f.write(str(code_blocks))
 
-    print("se extrajo correctamente los bloques de codigo de los pasos")
+    print("The code blocks were extracted correctly")
 
 
 if __name__ == "__main__":

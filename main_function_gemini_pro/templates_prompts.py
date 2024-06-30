@@ -28,7 +28,7 @@ Extraeme el numero de pasos PRINICLPALES  de las siguientes intrucciones y dame 
 
 input:{example_input_description_architecture}
 
-output:{exapmle_input_num_steps_architecture}
+output:{example_input_num_steps_architecture}
 
 input:{output_description_architecture}
 
