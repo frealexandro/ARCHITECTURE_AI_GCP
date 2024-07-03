@@ -4,13 +4,20 @@
 class Prompts:
 
     def __init__(self):
-        self.template_primer_prompt_extraer_descripcion = """Quiero construir este flujo desde el inicio hata el final solo usando la terminal de comandos de GCP.
-No tengo ninguna API habilitada de ningun servicio de GCP.Solo tengo habilitada una service account con todos los accesos.  
-Quiero las intruciones Paso a Paso .Adicional dime los Prerrequisitios,Recomendaciones,Posibles errores y Testing para evaluar
-este flujo correctamente. Puedes utilizar como lenguaje de programacion python para completar la logica dentro de algun componente. 
-Si es necesario en caso tal recuerda darme la dependencias y paquetes para tener un codigo exitoso.
+        self.template_primer_prompt_extraer_descripcion = """Construir un flujo completo utilizando solo la terminal de comandos de 
+        Google Cloud Platform (GCP), sin tener ninguna API habilitada de ningún servicio de GCP. Solo se cuenta con una cuenta de 
+        servicio con todos los accesos necesarios.
 
-input:"""
+input: Este flujo actual consta de cuatro componentes principales. El primero es un archivo Excel denominado "archivo_1", 
+        que incluye la información a procesar y consta de 82 columnas. Idealmente, este archivo se cargará en un bucket de 
+        Google Cloud Platform (GCP) llamado "bucket_experiment". El segundo componente es el mencionado bucket, situado 
+        en la región us-central-1 y de tipo estándar, que actúa como disparador para una Cloud Function. 
+        El tercer componente es esta Cloud Function, ubicada en us-central-1, denominada "bucket_experiment". 
+        Esta función se encarga de procesar el archivo Excel, asegurándose de que contenga las 82 columnas requeridas y, de ser así,
+        exportar los datos a una tabla en BigQuery llamada "tabla_experiment", ubicada en el dataset "experiment".
+        El cuarto y último componente es la mencionada tabla en BigQuery, que es una tabla en blanco.
+        Esta tabla se reemplaza mediante un script en Python ejecutado desde la Cloud Function, encargándose de almacenar 
+        temporalmente los datos exportados mientras se inserta otro archivo Excel en "bucket_experiment".  """
 
         self.template_segundo_prompt_extraer_descripcion =  """
 
