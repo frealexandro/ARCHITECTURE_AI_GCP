@@ -8,7 +8,7 @@ class Prompts:
         Google Cloud Platform (GCP), sin tener ninguna API habilitada de ningún servicio de GCP. Solo se cuenta con una cuenta de 
         servicio con todos los accesos necesarios.
 
-input: Este flujo actual consta de cuatro componentes principales. El primero es un archivo Excel denominado "archivo_1", 
+input:  Este flujo actual consta de cuatro componentes principales. El primero es un archivo Excel denominado "archivo_1", 
         que incluye la información a procesar y consta de 82 columnas. Idealmente, este archivo se cargará en un bucket de 
         Google Cloud Platform (GCP) llamado "bucket_experiment". El segundo componente es el mencionado bucket, situado 
         en la región us-central-1 y de tipo estándar, que actúa como disparador para una Cloud Function. 
@@ -19,12 +19,12 @@ input: Este flujo actual consta de cuatro componentes principales. El primero es
         Esta tabla se reemplaza mediante un script en Python ejecutado desde la Cloud Function, encargándose de almacenar 
         temporalmente los datos exportados mientras se inserta otro archivo Excel en "bucket_experiment".  """
 
-        self.template_segundo_prompt_extraer_descripcion =  """
+        self.template_segundo_prompt_extraer_descripcion = """
 
 output:{example_input_description_architecture}
 
 
-input:
+input:{input_description_architecture_context}
 
 """
 

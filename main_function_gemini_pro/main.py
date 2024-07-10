@@ -45,8 +45,10 @@ def run ():
     # all: Crear un objeto de la clase CloudStorageManager
     cloud_storage_manager = CloudStorageManager()
 
-    # all: leer el archivo de la primera arquitectura
+    # all: leer la imagen  de la primera arquitectura
     path_image = "/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/images_architectures/arquitectura_inicial.png"
+
+
 
     # all: usar el metodo upload_blob para subir un archivo a un bucket
     cloud_storage_manager.upload_blob("gemini_pro", path_image , 'arquitectura_inicial.png' )
@@ -68,9 +70,22 @@ def run ():
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_description_architecture.txt', 'r') as f:
        exmaple_input_architecture = f.read()
 
+    #all: leer la descripcion del flujo de la primera arquitectura
+    prompt_primer_flujo = """Este flujo actual consta de cuatro componentes principales. El primero es un archivo Excel denominado "archivo_1", 
+        que incluye la información a procesar y consta de 82 columnas. Idealmente, este archivo se cargará en un bucket de 
+        Google Cloud Platform (GCP) llamado "bucket_experiment". El segundo componente es el mencionado bucket, situado 
+        en la región us-central-1 y de tipo estándar, que actúa como disparador para una Cloud Function. 
+        El tercer componente es esta Cloud Function, ubicada en us-central-1, denominada "bucket_experiment". 
+        Esta función se encarga de procesar el archivo Excel, asegurándose de que contenga las 82 columnas requeridas y, de ser así,
+        exportar los datos a una tabla en BigQuery llamada "tabla_experiment", ubicada en el dataset "experiment".
+        El cuarto y último componente es la mencionada tabla en BigQuery, que es una tabla en blanco.
+        Esta tabla se reemplaza mediante un script en Python ejecutado desde la Cloud Function, encargándose de almacenar 
+        temporalmente los datos exportados mientras se inserta otro archivo Excel en "bucket_experiment"."""
+    
+
     #all: asignacion de varaibles al prompt para la descripcion de la arquitectura
     template_segundo_prompt_extraer_descripcion = prompt_template.template_segundo_prompt_extraer_descripcion.format(
-        example_input_description_architecture = exmaple_input_architecture)
+        example_input_description_architecture = exmaple_input_architecture, input_description_architecture_context = prompt_primer_flujo)
 
     #! se puede agregar descripcion del flujo con el fin de que tenga una mejor interpretacion el modelo de gemini
     #all: funcion para generar la descripcion de la imagen de la arquitectura inicial con gemini

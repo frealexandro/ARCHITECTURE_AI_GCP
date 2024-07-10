@@ -1,11 +1,8 @@
-Los pasos PRINCIPALES que describen la construcción del flujo de datos en el segundo ejemplo siguen siendo los mismos que en el primero, a pesar de tener más detalles e información adicional.  
+Aunque el texto describe mejoras al código y no enumera pasos explícitos como en el ejemplo anterior, podemos identificar **4 mejoras principales** que se están proponiendo al flujo de datos: 
 
-Por lo tanto, la respuesta también es **5**. 
+1. **Definir el esquema en BigQuery:** En lugar de una tabla en blanco, se recomienda crear la tabla en BigQuery con un esquema predefinido.
+2. **Usar la opción "Append" al cargar datos:**  Para añadir nuevos datos a la tabla existente en vez de reemplazarla con cada carga.
+3. **Implementar un manejo de errores más robusto:**  Añadiendo validaciones de datos, utilizando "logging", y manejando excepciones. 
+4. **Parametrizar la función:**  Utilizar variables de entorno para hacer la función más flexible y reutilizable. 
 
-Los pasos principales siguen siendo:
-
-1. **Configuración Inicial:** Preparación del entorno.
-2. **Cloud Storage:** Creación del bucket y subida del archivo.
-3. **Cloud Functions:** Desarrollo, configuración y despliegue de la función.
-4. **BigQuery:** Creación del dataset para almacenar los datos.
-5. **Prueba del Flujo:** Verificación del funcionamiento del proceso completo. 
+Por lo tanto, la respuesta es **4**. 
