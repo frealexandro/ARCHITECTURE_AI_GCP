@@ -1,23 +1,13 @@
-# Para loopear el último paso (la extracción de pasos específicos) en el flujo de trabajo, necesitas implementar un bucle dentro del flujo de Langchain para iterar sobre cada paso necesario. Aquí tienes un ejemplo de cómo puedes hacerlo:
-
-# 1. **Implementar el bucle dentro del flujo de Langchain**: Modificamos la cadena final para incluir un bucle que iterará sobre cada paso específico.
-
-# 2. **Modificar la estructura de Langchain para soportar múltiples ejecuciones**: Vamos a asegurarnos de que el último paso se ejecute múltiples veces y colecte los resultados.
-
-# Aquí tienes el código modificado para incluir el bucle:
-
-# ```python
-
 from langchain.chains import SimpleChain
 from langchain.prompts import PromptTemplate
 from langchain.models import GenerativeModel
 from langchain.storage import LocalStorage
 
-# Asumimos que 'credentials' ya está definido en tu entorno.
+#! Assuming 'credentials' is already defined in your environment.
 vertexai.init(project="datalake-analytics-339922", location="us-central1", credentials=credentials)
 model = GenerativeModel("gemini-1.5-pro-001")
 
-# Define the individual functions as chains
+#! Define the individual functions as chains
 def generate_description_image_chain(prompt_1, prompt_2, name_image):
     try:
         route_image2 = f"gs://gemini_pro/{name_image}"
@@ -26,7 +16,7 @@ def generate_description_image_chain(prompt_1, prompt_2, name_image):
         response = model.generate_content([prompt_1, image1, prompt_2, image2, "output:"])
         return {"output_description_architecture": response.text}
     except Exception as e:
-        print(f"Error al generar la descripción de la imagen {name_image}: {str(e)}")
+        print(f"Error generating description for image {name_image}: {str(e)}")
         return {"output_description_architecture": ""}
 
 def generate_count_steps_chain(prompt, output_description_architecture, example_input_description_architecture, example_input_num_steps_architecture):
@@ -39,7 +29,7 @@ def generate_count_steps_chain(prompt, output_description_architecture, example_
         response = model.generate_content([final_prompt])
         return {"steps_new_flow": response.text}
     except Exception as e:
-        print(f"Error al encontrar el número de pasos en {final_prompt}: {str(e)}")
+        print(f"Error finding the number of steps in {final_prompt}: {str(e)}")
         return {"steps_new_flow": ""}
 
 def get_aspects_chain(prompt_aspects, output_description_architecture, example_input_description_architecture, example_input_aspects_architecture):
@@ -52,7 +42,7 @@ def get_aspects_chain(prompt_aspects, output_description_architecture, example_i
         response = model.generate_content([final_prompt])
         return {"other_aspects": response.text}
     except Exception as e:
-        print(f"Error al encontrar el número de pasos en {final_prompt}: {str(e)}")
+        print(f"Error finding the number of steps in {final_prompt}: {str(e)}")
         return {"other_aspects": ""}
 
 def extract_step_chain(prompt, output_description_architecture, num_paso):
@@ -61,15 +51,15 @@ def extract_step_chain(prompt, output_description_architecture, num_paso):
         response = model.generate_content([final_prompt])
         return {"step": response.text}
     except Exception as e:
-        print(f"Error al encontrar el número de pasos en {final_prompt}: {str(e)}")
+        print(f"Error finding the number of steps in {final_prompt}: {str(e)}")
         return {"step": ""}
 
-# Define the prompts templates
-template_primer_prompt_extraer_descripcion = """Quiero construir este flujo desde el inicio hasta el final solo usando la terminal de comandos de GCP.
-No tengo ninguna API habilitada de ningún servicio de GCP. Solo tengo habilitada una service account con todos los accesos.  
-Quiero las instrucciones Paso a Paso. Adicionalmente, dime los Prerrequisitos, Recomendaciones, Posibles errores y Testing para evaluar
-este flujo correctamente. Puedes utilizar como lenguaje de programación python para completar la lógica dentro de algún componente. 
-Si es necesario en caso tal, recuerda darme las dependencias y paquetes para tener un código exitoso.
+#! Define the prompts templates
+template_primer_prompt_extraer_descripcion = """I want to build this flow from start to finish using only GCP command-line terminal.
+I don't have any enabled APIs from any GCP service. I only have a service account enabled with all the accesses.
+I want the Step by Step instructions. Additionally, tell me the Prerequisites, Recommendations, Possible errors, and Testing to properly evaluate this flow.
+You can use Python as the programming language to complete the logic inside any component.
+If necessary, please provide the dependencies and packages for successful code execution.
 
 input:"""
 
@@ -80,7 +70,7 @@ input:
 """
 
 template_segundo_prompt = """
-Extrae el número de pasos PRINCIPALES de las siguientes instrucciones y dame un número entero de cuantos pasos PRINCIPALES son en total:
+Extract the number of MAIN steps from the following instructions and give me an integer number of how many MAIN steps there are in total:
 
 input:{example_input_description_architecture}
 
@@ -92,7 +82,7 @@ output:
 """
 
 template_tercer_prompt = """
-Necesito que por favor extraigas exactamente la siguiente información de este texto ("Prerrequisitos", "Recomendaciones", "Posibles errores", "Testing")
+Please extract the following information exactly from this text ("Prerequisites", "Recommendations", "Possible errors", "Testing")
 
 input:{example_input_description_architecture}
 
@@ -104,15 +94,15 @@ output:
 """
 
 template_extraer_paso = """
-Extrae exactamente la información del paso principal número {num_paso} de las siguientes instrucciones. 
-Quiero exactamente el mismo texto, puedes reconocerlo porque todos los pasos principales inician con estos caracteres "**1."
+Extract the information of the main step number {num_paso} from the following instructions.
+I want exactly the same text, you can recognize it because all main steps start with these characters "**1."
 
 input:{output_description_architecture}
 
 output:
 """
 
-# Define the chain steps
+#! Define the chain steps
 generate_description_image_step = SimpleChain(
     input_variables=["prompt_1", "prompt_2", "name_image"],
     output_variables=["output_description_architecture"],
@@ -131,7 +121,7 @@ get_aspects_step = SimpleChain(
     chain_function=get_aspects_chain
 )
 
-# Function to handle looping over steps
+#! Function to handle looping over steps
 def loop_extract_steps(output_description_architecture, num_steps):
     steps = []
     for i in range(1, num_steps + 1):
@@ -139,22 +129,22 @@ def loop_extract_steps(output_description_architecture, num_steps):
         steps.append(step_result["step"])
     return steps
 
-# Final chain execution
+#! Final chain execution
 def run_chain():
-    # Initialize variables
-    example_input_description_architecture = "Ejemplo de descripción de arquitectura"
+    #! Initialize variables
+    example_input_description_architecture = "Example architecture description"
     example_input_num_steps_architecture = "3"
-    example_input_aspects_architecture = "Ejemplo de aspectos de la arquitectura"
+    example_input_aspects_architecture = "Example architecture aspects"
 
-    # Generate description
+    #! Generate description
     description_result = generate_description_image_step.run({
         "prompt_1": template_primer_prompt_extraer_descripcion,
         "prompt_2": template_segundo_prompt_extraer_descripcion,
-        "name_image": "arquitectura_inicial.png"
+        "name_image": "initial_architecture.png"
     })
     output_description_architecture = description_result["output_description_architecture"]
 
-    # Generate count of steps
+    #! Generate count of steps
     steps_result = generate_count_steps_step.run({
         "prompt": template_segundo_prompt,
         "output_description_architecture": output_description_architecture,
@@ -164,7 +154,7 @@ def run_chain():
     steps_new_flow = steps_result["steps_new_flow"]
     num_steps = int(re.findall(r'\d+', steps_new_flow)[0])
 
-    # Get aspects
+    #! Get aspects
     aspects_result = get_aspects_step.run({
         "prompt_aspects": template_tercer_prompt,
         "output_description_architecture": output_description_architecture,
@@ -173,7 +163,7 @@ def run_chain():
     })
     other_aspects = aspects_result["other_aspects"]
 
-    # Loop to extract each step
+    #! Loop to extract each step
     steps = loop_extract_steps(output_description_architecture, num_steps)
     
     return {
@@ -184,15 +174,7 @@ def run_chain():
         "steps": steps
     }
 
-# Run the final chain
+#! Run the final chain
 final_result = run_chain()
 
 print(final_result)
-# ```
-
-# En este código:
-
-# 1. **`loop_extract_steps`**: Función que itera sobre el número de pasos y llama a `extract_step_chain` para cada paso, recolectando los resultados en una lista.
-# 2. **`run_chain`**: Función que coordina la ejecución del flujo completo, manejando las entradas y salidas de cada paso y utilizando la función `loop_extract_steps` para iterar sobre los pasos.
-
-# Este enfoque te permite encadenar y loopear los diferentes prompts, asegurando que la salida de un paso se utilice correctamente en el siguiente. ¿Hay algo más que te gustaría ajustar o agregar? 🔨🤖🔧

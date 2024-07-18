@@ -17,7 +17,7 @@ class ServiceAccessChecker:
 
     def check_full_access_service_account(self , services):
 
-        #* Autenticarse con la cuenta de servicio
+        #* Authenticate with service account credentials
         #*credentials = service_account.Credentials.from_service_account_file(self.credentials)
         
         results = {}
@@ -25,10 +25,11 @@ class ServiceAccessChecker:
             try:
                 if service == 'compute' or service == 'storage' or service == 'pubsub' or service == 'cloudfunctions':
                 
-                    #! Construir el cliente de la API del servicio
+                    #! Build the service API client
                     service_client = build(service, 'v1', credentials=self.credentials)
                     
-                    # Definir los métodos de prueba para cada servicio
+                    
+                    #! Define test methods for each service
                     if service == 'compute':
                         service_client.zones().list(project=self.project_id).execute()
                     elif service == 'storage':

@@ -1,33 +1,35 @@
 
-#all: primera funcion para crear la descripcion del pipeline tenuiendo en cuenta que la service account ya esdta logueada en el entorno 
+#all: first function to create the pipeline description considering that the service account is already logged in the environment
 
 from google.oauth2 import service_account
 import re
 import os
 
-#all: importar la clase CloudStorageManager
+#all: import the CloudStorageManager class
 from cloud_storage import CloudStorageManager
 
-#all: importar la clase GeminiOperations
+#all: import the GeminiOperations class
 from gemini_operations import GeminiOperations
 
-#all: importar la clase PromptTemplate
+#all: import the PromptTemplate class
 from templates_prompts import Prompts
+from cloud_storage import CloudStorageManager
+from gemini_operations import GeminiOperations
 
 
 
 
 
-#all: Ruta al archivo de clave de la cuenta de servicio
+#all: Path to the service account key file
 key_path = "/home/frealexandro/proyectos_personales/gemini_pro_competition/keys/key_service_account_analitycs_contactica.json"
 
 
-#all : cargar la cuenta de servicio en el sistema con os esta se encuentra ya cargada en la variable key_path
+#all: Load the service account into the system using os, as it is already loaded in the variable key_path
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
 
 
 #* ejemplo de como se puede inicializar el proyecto y la ubicacion con las credenciales de la cuenta de servicio
-# vertexai.init(project="datalake-analytics-339922", location="us-central1", credentials=credentials)
+#* vertexai.init(project="datalake-analytics-339922", location="us-central1", credentials=credentials)
 
 
 
@@ -39,39 +41,43 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
 def run ():
 
     #!################################################################
-    #!subir la imagen de la arquitectura inicial a un bucket de google cloud storage
+    #! Upload the image of the initial architecture to a Google Cloud Storage bucket
 
 
-    # all: Crear un objeto de la clase CloudStorageManager
+    # all: Create an object of the CloudStorageManager class
     cloud_storage_manager = CloudStorageManager()
 
-    # all: leer la imagen  de la primera arquitectura
+    # all: read the first image of the architecture
     path_image = "/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/images_architectures/arquitectura_inicial.png"
 
 
 
-    # all: usar el metodo upload_blob para subir un archivo a un bucket
+    
+    # all: use the upload_blob method to upload a file to a bucket
     cloud_storage_manager.upload_blob("gemini_pro", path_image , 'arquitectura_inicial.png' )
 
     #!################################################################
     #!inicio del proceso de generacion de la descripcion de la arquitectura inicial
 
-    # all: crear variable del modelo de lenguaje
+    # all: create language model variable
     model = "gemini-1.5-pro-001"
 
 
-    # all: Crear un objeto de la clase GeminiOperations
+    
+    # all: Create an object of the GeminiOperations class
     gemini_operations = GeminiOperations(model)
 
-    # all: Crear un objeto de la clase PromptTemplate
+    # all: Create an object of the PromptTemplate class
     prompt_template = Prompts()
 
-    #all :leer descripcion de la arquitectura de ejemplo 
+    
+    #all : read description of the example architecture 
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_description_architecture.txt', 'r') as f:
        exmaple_input_architecture = f.read()
 
-    #all: leer la descripcion del flujo de la primera arquitectura
-    prompt_primer_flujo = """Este flujo actual consta de cuatro componentes principales. El primero es un archivo Excel denominado "archivo_1", 
+    
+    #all: read the flow description of the first architecture
+    first_flow_prompt = """Este flujo actual consta de cuatro componentes principales. El primero es un archivo Excel denominado "archivo_1", 
         que incluye la información a procesar y consta de 82 columnas. Idealmente, este archivo se cargará en un bucket de 
         Google Cloud Platform (GCP) llamado "bucket_experiment". El segundo componente es el mencionado bucket, situado 
         en la región us-central-1 y de tipo estándar, que actúa como disparador para una Cloud Function. 
@@ -84,17 +90,18 @@ def run ():
 
 
 
-    #all: asignacion de varaibles al prompt para la descripcion de la arquitectura
+    #all: assignment of variables to the prompt for the architecture description
     template_segundo_prompt_extraer_descripcion = prompt_template.template_segundo_prompt_extraer_descripcion.format(
-        example_input_description_architecture = exmaple_input_architecture, input_description_architecture_context = prompt_primer_flujo)
+        example_input_description_architecture = exmaple_input_architecture, input_description_architecture_context = first_flow_prompt)
 
-    #! se puede agregar descripcion del flujo con el fin de que tenga una mejor interpretacion el modelo de gemini
-    #all: funcion para generar la descripcion de la imagen de la arquitectura inicial con gemini
+    
+    #! A description of the flow can be added so that the Gemini model has a better interpretation.
+    #all: function to generate the description of the image of the initial architecture with Gemini
     output_description_architecture = gemini_operations.generate_description_image (prompt_template.template_primer_prompt_extraer_descripcion ,
                                                                                     template_segundo_prompt_extraer_descripcion ,
-                                                                                    'arquitectura_inicial.png' )
+                                                                                    'initial_architecture.png' )
 
-    #all :guardar la descripcion de la arquitectura de salida
+    #all : save the description of the output architecture
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_description_architecture.txt', 'w') as f:
       f.write(output_description_architecture)
 
@@ -102,13 +109,14 @@ def run ():
 
     
     #!###################################################################
-    #!inicio del segundo prompt para contar los pasos de la arquitectura
+    #!start of the second prompt to count the steps of the architecture
 
-    #all: leer el ejemplo del numero de pasos de la arquitectura ejemplo
+    #all: read the example of the number of steps in the example architecture
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_num_steps_architecture.txt', 'r') as f:
         example_input_steps_architecture = f.read()
 
-    #all :asignacion de varaibles al prompt para contar los pasos de la arquitectura
+
+    #all: assignment of variables to the prompt to count the steps of the architecture
 
     template_segundo_prompt = prompt_template.template_segundo_prompt.format(
                 output_description_architecture = output_description_architecture,
@@ -116,15 +124,17 @@ def run ():
                 example_input_num_steps_architecture = example_input_steps_architecture
             )
 
-    #all: llama la funcion de contar los pasos con gemini
+    #all: calls the step counting function with gemini
     steps_new_flow = gemini_operations.generate_count_steps(template_segundo_prompt)
 
-    #all: guardar el archivo de los pasos de salida
+    
+    #all: save the output steps file
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_num_steps_architecture.txt', 'w') as f:
         f.write(steps_new_flow)
 
     
-    #all: extraer el numero de pasos con una funcion regex
+    
+    #all: extract the number of steps with a regex function
     number_steps = re.findall(r'\d+', steps_new_flow)
     print(f"The number of flow steps are: {number_steps[0]}")
 
@@ -132,13 +142,13 @@ def run ():
     print("The second prompt was generated correctly")
 
     #!###################################################################
-    #!inicio del tercer prompt para obtener otros aspectos de la arquitectura en un archivo
+    #!start the third prompt to get other aspects of the architecture in a file
 
-    #all: leer el ejemplo de otros aspectos de la arquitectura
+    #all: read the example of other aspects of architecture
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_other_aspects_architecture.txt', 'r') as f:
         example_input_aspects_architecture = f.read()
 
-    #all: asignacion de varaibles al prompt para obtener otros aspectos de la arquitectura
+    #all: assignment of variables to the prompt to obtain other aspects of the architecture
     template_tercer_prompt = prompt_template.template_tercer_prompt.format(
         example_input_description_architecture = exmaple_input_architecture,
         example_input_aspects_architecture = example_input_aspects_architecture,
@@ -146,37 +156,41 @@ def run ():
     )
 
 
-    #all: llama la funcion de otros aspectos de la arquitectura, esto con el fin de obtener otros aspectos de la arquitectura 
+    
+    #all: calls the function of other aspects of the architecture, this in order to obtain other aspects of the architecture
     other_aspects = gemini_operations.get_aspects(template_tercer_prompt)
 
-    #all: guardar archivo de otros aspectos de la arquitectura
+    #all: save file from other aspects of the architecture
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_other_aspects_architecture.txt', 'w') as f:
        f.write(other_aspects)
 
     print("The third prompt was generated correctly")
 
-    #!#####################################################################
-    #!inicio del cuarto prompt para extraer el paso exacto de las instrucciones
+    #!######################################################################
+    #!start of the fourth prompt to extract the exact step of the instructions
 
-
-    #all: usar la variable number_steps[0] para el numero de pasos en el flujo de la arquitectura con un ciclo for desde 1 hasta el numero de pasos
+    
+    #all: use the variable number_steps[0] for the number of steps in the architecture flow with a for loop from 1 to the number of steps
     for i in range(int(number_steps[0])):
         
-        #*se depreca esta opcion debido a que no se ve util la opcion de agregar ejemplos, puede tener fallos ya que el num de ejmplo varia
+        
+        #*this option is deprecated because the option to add examples does not seem useful, it may have errors since the example number varies
         # with open(f'/home/frealexandro/projects/Notebooks_2024/GEN_GCP_AI/competition_gemini_pro/examples/paso_{i+1}/paso_{i+1}.txt', 'r') as f:
         #     example_input_paso_architecture = f.read()
 
-        #all: asignacion de varaibles al prompt para extraer el paso exacto de las instrucciones
+        
+        #all: assignment of variables to the prompt to extract the exact step of the instructions
         template_extraer_paso = prompt_template.template_extraer_paso.format(
             output_description_architecture = output_description_architecture,
             num_paso = i+1
         )
         
-        #all: llama la funcion de extraer el paso exacto de las instrucciones
+        #all: calls the function to extract the exact step of the instructions
         step = gemini_operations.extract_step(template_extraer_paso)
 
 
-        #all: guardar el archivo de los pasos 
+        
+        #all: save the file of the extracted steps
         with open(f'/home/frealexandro/projects/Notebooks_2024/GEN_GCP_AI/competition_gemini_pro/final_output/step_{i+1}.txt', 'w') as f:
             f.write(step)
 
@@ -187,17 +201,18 @@ def run ():
 
 
     #!######################################################################
-    #!extraer los bloques de codigo de los pasos extraidos
+    #!extract the code blocks of the extracted steps
+    
 
     for i in range(int(number_steps[0])):
 
 
-        #all: leer un archivo de texto con los pasos extraidos        
+        #all: read a text file with the extracted steps       
         with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/step_{i+1}.txt', 'r') as f:
             step = f.read()
 
 
-        #all: extraer el texto en una sola lista con las etiquetas bash , python y txt en el orden correcto de los pasos 
+        #all: Extract the text into a single list with the bash, python and txt tags in the correct order of steps 
         pattern = re.compile(r'```(bash|python|txt)(.*?)```', re.DOTALL)
 
 
@@ -209,7 +224,7 @@ def run ():
         for match in matches:
             
             code_blocks.append(match[1].strip())
-            #all: guardar lista en un archivo de texto
+            #all: save list to a text file
             with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/code_blocks_{i}.txt', 'w') as f:
                 f.write(str(code_blocks))
 

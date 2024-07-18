@@ -9,17 +9,18 @@ app = FastAPI()
 
 @app.post("/check-access/")
 async def check_access(credentials_file: UploadFile = File(...)):
-    # Crear un archivo temporal para guardar el contenido del archivo subido
+    
+    #! Create a temporary file to store the content of the uploaded file
     with NamedTemporaryFile(delete=False) as temp_file:
         shutil.copyfileobj(credentials_file.file, temp_file)
         temp_file_path = temp_file.name
 
     try:
-        # Leer el contenido del archivo JSON
+        #! Read the content of the JSON file
         with open(temp_file_path, 'r') as f:
             credentials_data = json.load(f)
         
-        # Extraer el project_id del archivo de credenciales
+        #! Extract the project_id from the credentials file
         project_id = credentials_data.get('project_id')
         
         if not project_id:
@@ -29,7 +30,8 @@ async def check_access(credentials_file: UploadFile = File(...)):
         services = ['compute', 'storage', 'pubsub', 'cloudfunctions', 'bigquery', 'gemini']
         results = checker.check_full_access_service_account(services)
         
-        # Añadir el project_id a los resultados
+        #! Add the project_id to the results
+        results['project_id'] = project_id
         results['project_id'] = project_id
         
         return results
@@ -40,6 +42,6 @@ async def check_access(credentials_file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
-        # Asegúrate de eliminar el archivo temporal
+        #! Make sure to delete the temporary file
         import os
         os.unlink(temp_file_path)

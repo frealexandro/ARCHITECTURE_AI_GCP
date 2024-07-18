@@ -4,7 +4,7 @@
 class Prompts:
 
     def __init__(self):
-        self.template_primer_prompt_extraer_descripcion = """Construir un flujo completo utilizando solo la terminal de comandos de 
+        self.template_first_prompt_extract_description = """Construir un flujo completo utilizando solo la terminal de comandos de 
         Google Cloud Platform (GCP), sin tener ninguna API habilitada de ningún servicio de GCP. Solo se cuenta con una cuenta de 
         servicio con todos los accesos necesarios.
 
@@ -19,7 +19,7 @@ input:  Este flujo actual consta de cuatro componentes principales. El primero e
         Esta tabla se reemplaza mediante un script en Python ejecutado desde la Cloud Function, encargándose de almacenar 
         temporalmente los datos exportados mientras se inserta otro archivo Excel en "bucket_experiment".  """
 
-        self.template_segundo_prompt_extraer_descripcion = """
+        self.template_second_prompt_extract_description = """
 
 output:{example_input_description_architecture}
 
@@ -28,7 +28,7 @@ input:{input_description_architecture_context}
 
 """
 
-        self.template_segundo_prompt = """"
+        self.template_second_prompt = """"
 
 Extraeme el numero de pasos PRINICLPALES  de las siguientes intrucciones y dame un numero entero  de cuantos pasos PRINCIPALES son en total:
 
@@ -43,7 +43,7 @@ output:
 
 """
 
-        self.template_tercer_prompt = """"
+        self.template_third_prompt = """"
 
 Necesito que porfavor me extraigas exactamente la siguiente informacion de este texto ("Prerrequisitos","Recomendaciones","Posibles errores","Testing")
 
@@ -57,7 +57,7 @@ output:
 
 """
 
-        self.template_extraer_paso = """"
+        self.template_extract_step = """"
 
 Extraeme exactamente la informacion del paso principal numero {num_paso} de las siguientes intrucciones , 
 quiero exactamente el mismo texto , puedes reconocerlo por que todos lo pasos principales inician con estos caracteres  "**1."

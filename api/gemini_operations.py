@@ -4,13 +4,14 @@ from vertexai.generative_models import GenerativeModel,Part
 
 class GeminiOperations:
 
-    #all: Clase para realizar operaciones con el modelo de lenguaje
+    #all: Class to perform operations with the language model
     def __init__(self, model):
-        #all: Inicializar el modelo de lenguaje
+        #all: Initialize the language model
         self.model = model
 
 
-    #all: Metodo para generar la descripcion de una imagen
+    
+    #all: Method to generate the description of an image
     def generate_description_image(self, prompt_1, prompt_2, name_image):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
@@ -28,7 +29,8 @@ class GeminiOperations:
             return ""
 
 
-    #all: Metodo para extraer la descripcion de un paso
+    
+    #all: Method to extract the description of a step
     def generate_count_steps(self, final_prompt):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
@@ -44,7 +46,7 @@ class GeminiOperations:
             return ""
 
 
-    #all: Metodo para extraer los aspectos de una arquitectura
+    #all: Method to extract the aspects of an architecture
     def get_aspects(self, final_prompt):
         try:
             vertexai.init(project="datalake-analytics-339922", location="us-central1")
@@ -58,7 +60,7 @@ class GeminiOperations:
             return ""
 
 
-    #all: Metodo para extraer un paso de una arquitectura
+    #all: Method to extract a step from an architecture
     def extract_step(self, final_prompt):
 
         try:
