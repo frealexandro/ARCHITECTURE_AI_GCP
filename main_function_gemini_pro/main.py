@@ -81,7 +81,8 @@ def run ():
         El cuarto y último componente es la mencionada tabla en BigQuery, que es una tabla en blanco.
         Esta tabla se reemplaza mediante un script en Python ejecutado desde la Cloud Function, encargándose de almacenar 
         temporalmente los datos exportados mientras se inserta otro archivo Excel en "bucket_experiment"."""
-    
+
+
 
     #all: asignacion de varaibles al prompt para la descripcion de la arquitectura
     template_segundo_prompt_extraer_descripcion = prompt_template.template_segundo_prompt_extraer_descripcion.format(
