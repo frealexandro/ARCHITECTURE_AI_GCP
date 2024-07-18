@@ -3,6 +3,8 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.cloud import bigquery
+import vertexai
+from vertexai.generative_models import GenerativeModel,Part
 
 
 
@@ -42,11 +44,20 @@ class ServiceAccessChecker:
                     client.query("SELECT 1").result()
                     results[service] = 'Full access'
 
+                elif service == 'gemini':
+                    
+                    vertexai.init(project=self.project_id , location="us-central1")
+                    model = GenerativeModel("gemini-1.5-pro-001")
+                    response = model.generate_content("Hello, Gemini!")
+                    if response.text:
+                        results[service] = 'Full access'
+
                 else:
                     results[service] = 'Service not supported'
                     continue
                 
                 results[service] = 'Full access'
+                
             except HttpError as e:
                 if e.resp.status in [403, 404]:
                     results[service] = 'No access'
@@ -58,28 +69,3 @@ class ServiceAccessChecker:
         return results
 
 
-
-
-# def run ():
-#     #! path del archivo de credenciales
-#     credentials_file = '/home/frealexandro/proyectos_personales/gemini_pro_competition/keys/key_service_account_analitycs_contactica.json'
-
-#     #* code is not necesary for this case 
-#     # # find the id of the proyect of the service account
-#     # with open(credentials_file) as f:
-#     #     credentials_info = json.load(f)
-#     #     service_account_email  = credentials_info['client_email']
-
-#     #! find the id of the proyect of the service account
-#     with open(credentials_file) as f:
-#         credentials_info = json.load(f)
-#         project_id  = credentials_info['project_id']
-
-#     services = ['compute', 'storage', 'bigquery', 'pubsub','cloudfunctions']  #! Agrega los servicios que deseas verificar por ahora solo se soportan estos
-    
-#     access_results = check_full_access_service_account(credentials_file, project_id, services)
-
-#     print(access_results)
-
-# if __name__ == "__main__":
-#     run()
