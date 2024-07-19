@@ -77,28 +77,64 @@ def run ():
 
     
     #all: read the flow description of the first architecture
-    first_flow_prompt = """Este flujo actual consta de cuatro componentes principales. El primero es un archivo Excel denominado "archivo_1", 
-        que incluye la información a procesar y consta de 82 columnas. Idealmente, este archivo se cargará en un bucket de 
-        Google Cloud Platform (GCP) llamado "bucket_experiment". El segundo componente es el mencionado bucket, situado 
-        en la región us-central-1 y de tipo estándar, que actúa como disparador para una Cloud Function. 
-        El tercer componente es esta Cloud Function, ubicada en us-central-1, denominada "bucket_experiment". 
-        Esta función se encarga de procesar el archivo Excel, asegurándose de que contenga las 82 columnas requeridas y, de ser así,
-        exportar los datos a una tabla en BigQuery llamada "tabla_experiment", ubicada en el dataset "experiment".
-        El cuarto y último componente es la mencionada tabla en BigQuery, que es una tabla en blanco.
-        Esta tabla se reemplaza mediante un script en Python ejecutado desde la Cloud Function, encargándose de almacenar 
-        temporalmente los datos exportados mientras se inserta otro archivo Excel en "bucket_experiment"."""
+    first_flow_prompt = """ Build a complete workflow in Google Cloud Platform (GCP) using only the
+        command-line terminal, without any enabled APIs. You have a service account with all necessary access rights.
+
+input:  Workflow components:
+        -1.Input file:
+            Name: "archivo_1.xlsx"
+            Content: 82 columns of data
+            Destination: GCP bucket "bucket_experiment"
+
+        -2.GCP Bucket:
+            Name: "bucket_experiment"
+            Region: us-central1
+            Type: Standard
+            Function: Trigger for Cloud Function
+
+        -3.Cloud Function:
+            Name: "bucket_experiment"
+            Region: us-central1
+            Trigger: File upload to the bucket
+            Functions:
+                a) Verify 82 columns in the Excel file
+                b) Process and export data to BigQuery
+
+        -4.BigQuery Table:
+            Name: "tabla_experiment"
+            Dataset: "experiment"
+            Initial state: Empty
+            Update: Replaced with each new processed file
+
+        Data flow:
+            Upload of "archivo_1.xlsx" to "bucket_experiment"
+            Activation of Cloud Function "bucket_experiment"
+            File processing and export to BigQuery
+            Replacement of data in "tabla_experiment"
+            Process repetition with each new Excel file
+
+        Instructions:
+         -Provide the necessary GCP terminal commands to:
+            Create the "bucket_experiment" bucket in the us-central1 region
+            Upload the "archivo_1.xlsx" file to the bucket
+            Create the "bucket_experiment" Cloud Function with the appropriate trigger
+            Deploy the Python code for the Cloud Function that processes the file and exports to BigQuery
+            Create the "experiment" dataset and "tabla_experiment" table in BigQuery
+            Configure the necessary permissions for the Cloud Function to access the bucket and BigQuery
+
+        Note: Ensure all commands are compatible with the GCP terminal and do not require additional APIs.  """
 
 
 
     #all: assignment of variables to the prompt for the architecture description
-    template_segundo_prompt_extraer_descripcion = prompt_template.template_segundo_prompt_extraer_descripcion.format(
+    template_second_prompt_extract_description = prompt_template.template_second_prompt_extract_description.format(
         example_input_description_architecture = exmaple_input_architecture, input_description_architecture_context = first_flow_prompt)
 
     
     #! A description of the flow can be added so that the Gemini model has a better interpretation.
     #all: function to generate the description of the image of the initial architecture with Gemini
-    output_description_architecture = gemini_operations.generate_description_image (prompt_template.template_primer_prompt_extraer_descripcion ,
-                                                                                    template_segundo_prompt_extraer_descripcion ,
+    output_description_architecture = gemini_operations.generate_description_image (prompt_template.template_first_prompt_extract_description ,
+                                                                                    template_second_prompt_extract_description ,
                                                                                     'initial_architecture.png' )
 
     #all : save the description of the output architecture
@@ -118,14 +154,14 @@ def run ():
 
     #all: assignment of variables to the prompt to count the steps of the architecture
 
-    template_segundo_prompt = prompt_template.template_segundo_prompt.format(
+    template_second_prompt = prompt_template.template_second_prompt.format(
                 output_description_architecture = output_description_architecture,
                 example_input_description_architecture = exmaple_input_architecture,
                 example_input_num_steps_architecture = example_input_steps_architecture
             )
 
     #all: calls the step counting function with gemini
-    steps_new_flow = gemini_operations.generate_count_steps(template_segundo_prompt)
+    steps_new_flow = gemini_operations.generate_count_steps(template_second_prompt)
 
     
     #all: save the output steps file
@@ -149,7 +185,7 @@ def run ():
         example_input_aspects_architecture = f.read()
 
     #all: assignment of variables to the prompt to obtain other aspects of the architecture
-    template_tercer_prompt = prompt_template.template_tercer_prompt.format(
+    template_third_prompt = prompt_template.template_third_prompt.format(
         example_input_description_architecture = exmaple_input_architecture,
         example_input_aspects_architecture = example_input_aspects_architecture,
         output_description_architecture = output_description_architecture
@@ -158,7 +194,7 @@ def run ():
 
     
     #all: calls the function of other aspects of the architecture, this in order to obtain other aspects of the architecture
-    other_aspects = gemini_operations.get_aspects(template_tercer_prompt)
+    other_aspects = gemini_operations.get_aspects(template_third_prompt)
 
     #all: save file from other aspects of the architecture
     with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_other_aspects_architecture.txt', 'w') as f:
@@ -180,13 +216,13 @@ def run ():
 
         
         #all: assignment of variables to the prompt to extract the exact step of the instructions
-        template_extraer_paso = prompt_template.template_extraer_paso.format(
+        template_extract_step = prompt_template.template_extract_step.format(
             output_description_architecture = output_description_architecture,
-            num_paso = i+1
+            num_step = i+1
         )
         
         #all: calls the function to extract the exact step of the instructions
-        step = gemini_operations.extract_step(template_extraer_paso)
+        step = gemini_operations.extract_step(template_extract_step)
 
 
         
