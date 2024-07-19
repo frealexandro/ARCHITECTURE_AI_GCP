@@ -1,1 +1,3 @@
-['gsutil cp <path_to_your_excel_file.xlsx> gs://$BUCKET_NAME']
+[bash]
+bq --location=us mk experiment
+

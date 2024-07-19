@@ -1,7 +1,0 @@
-**2. Cloud Storage:**
-
-2.1 **Crea un bucket:**  Crea un bucket para almacenar el archivo Excel y el código de la función.
-
-```bash
-gsutil mb -l us-central1 gs://bucket_experiment
-```

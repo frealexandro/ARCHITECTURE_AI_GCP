@@ -1,1 +1,0 @@
-['export PROJECT_ID=<your_project_id>\n     export BUCKET_NAME=<your_bucket_name>\n     export FUNCTION_NAME=<your_function_name>\n     export DATASET_ID=<your_dataset_id>\n     export TABLE_ID=<your_table_id>\n     export LOCATION=us-central1', 'gcloud auth activate-service-account --key-file=<path_to_your_credentials_file.json>']

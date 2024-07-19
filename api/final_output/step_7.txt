@@ -1,3 +1,0 @@
-```bash
-gsutil cp <ruta_al_archivo_excel> gs://<nombre_del_bucket>/
-```

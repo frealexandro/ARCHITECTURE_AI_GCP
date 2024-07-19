@@ -1,69 +1,11 @@
-**4. Crea la función de Cloud Function:**
+**4. BigQuery Configuration:**
 
-    * Crea un directorio para tu código:
-     ```bash
-     mkdir $FUNCTION_NAME
-     cd $FUNCTION_NAME
-     ```
-    * Crea un archivo `main.py` con el siguiente código:
+4.1. **Create Dataset:**
 
-      ```python
-      from google.cloud import storage
-      from google.cloud import bigquery
-      import pandas as pd
+   ```bash
+   bq --location=us mk experiment
+   ```
 
-      def process_excel(event, context):
-          """Función activada por Cloud Storage al subir un archivo."""
-          file = event
-          bucket_name = file['bucket']
-          file_name = file['name']
+4.2. **Create Table (Initially Empty):** 
 
-          if not file_name.endswith('.xlsx'):
-              print(f"Archivo no procesado: {file_name}")
-              return
-
-          # Descarga el archivo de Cloud Storage
-          storage_client = storage.Client()
-          bucket = storage_client.bucket(bucket_name)
-          blob = bucket.blob(file_name)
-          blob.download_to_filename('/tmp/data.xlsx')
-
-          # Lee el archivo Excel con pandas
-          df = pd.read_excel('/tmp/data.xlsx', engine='openpyxl')
-
-          # Valida que el archivo tenga 30 columnas
-          if len(df.columns) != 30:
-              print(f"Archivo inválido: {file_name} no tiene 30 columnas")
-              return
-
-          # Carga los datos a BigQuery
-          client = bigquery.Client()
-          table_id = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
-
-          job_config = bigquery.LoadJobConfig(
-              source_format=bigquery.SourceFormat.PARQUET,
-              autodetect=True,
-              write_disposition="WRITE_APPEND"
-          )
-          job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
-          job.result() 
-
-          print(f"Archivo {file_name} procesado y cargado a BigQuery")
-
-      ```
-    * Crea un archivo `requirements.txt` con las dependencias:
-      ```
-      google-cloud-storage
-      google-cloud-bigquery
-      pandas
-      openpyxl
-      ```
-    * Despliega la función:
-      ```bash
-      gcloud functions deploy $FUNCTION_NAME \
-          --runtime python38 \
-          --trigger-resource gs://$BUCKET_NAME \
-          --trigger-event google.storage.object.finalize \
-          --location $LOCATION \
-          --source .
-      ```
+   We will let BigQuery autodetect the schema from the Excel file.  There's no need to create a table structure beforehand when using `autodetect=True` in the load job configuration. 

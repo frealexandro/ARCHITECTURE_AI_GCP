@@ -1,7 +1,0 @@
-**5. Prueba del Flujo:**
-
-Sube un nuevo archivo Excel al bucket en la ruta `gs://bucket_experiment/`. La función de Cloud Function se activará automáticamente, procesará el archivo y cargará los datos en la tabla de BigQuery.
-
-```bash
-gsutil cp archivo_1.xlsx gs://bucket_experiment/
-```

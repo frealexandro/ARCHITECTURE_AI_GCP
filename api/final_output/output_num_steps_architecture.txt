@@ -1,8 +1,1 @@
-Aunque el texto describe mejoras al código y no enumera pasos explícitos como en el ejemplo anterior, podemos identificar **4 mejoras principales** que se están proponiendo al flujo de datos: 
-
-1. **Definir el esquema en BigQuery:** En lugar de una tabla en blanco, se recomienda crear la tabla en BigQuery con un esquema predefinido.
-2. **Usar la opción "Append" al cargar datos:**  Para añadir nuevos datos a la tabla existente en vez de reemplazarla con cada carga.
-3. **Implementar un manejo de errores más robusto:**  Añadiendo validaciones de datos, utilizando "logging", y manejando excepciones. 
-4. **Parametrizar la función:**  Utilizar variables de entorno para hacer la función más flexible y reutilizable. 
-
-Por lo tanto, la respuesta es **4**. 
+5 

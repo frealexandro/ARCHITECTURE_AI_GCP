@@ -1,3 +1,7 @@
-```bash
-gsutil mb -l $LOCATION gs://$BUCKET_NAME
-```
+**2. Cloud Storage Setup:**
+
+2.1. **Create Bucket:**
+
+   ```bash
+   gsutil mb -l us-central1 gs://bucket_experiment
+   ```

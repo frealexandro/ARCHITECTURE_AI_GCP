@@ -1,9 +1,9 @@
-En este caso, el texto ofrece una guía con varios sub-pasos, pero si nos centramos en los pasos PRINCIPALES que describen la construcción del flujo de datos, podemos identificar **5 acciones principales**:
+In this case, the text offers a guide with several sub-steps, but if we focus on the MAIN steps that describe the construction of the data flow, we can identify **5 main actions**:
 
-1. **Configuración Inicial:**  Preparar el entorno de Google Cloud.
-2. **Cloud Storage:** Crear un bucket y subir el archivo Excel. 
-3. **Cloud Functions:**  Escribir, configurar y desplegar la función que procesará los datos.
-4. **BigQuery:** Crear el dataset en BigQuery que almacenará los datos.
-5. **Prueba del Flujo:** Probar el funcionamiento del proceso completo. 
+1. **Initial Configuration:** Prepare the Google Cloud environment.
+2. **Cloud Storage:** Create a bucket and upload the Excel file.
+3. **Cloud Functions:** Write, configure, and deploy the function that will process the data.
+4. **BigQuery:** Create the dataset in BigQuery that will store the data.
+5. **Flow Testing:** Test the functioning of the complete process.
 
-Por lo tanto, la respuesta es **5**. 
+Therefore, the answer is **5**.

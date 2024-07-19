@@ -1,1 +1,6 @@
-['gsutil mb -l $LOCATION gs://$BUCKET_NAME']
+[bash]
+gcloud auth login
+
+[bash]
+gcloud config set project YOUR_PROJECT_ID
+

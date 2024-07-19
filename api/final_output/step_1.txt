@@ -1,15 +1,15 @@
-**1. Configuración inicial:**
+**1. Prepare Your Environment:**
 
-    * Define las variables de entorno:
-     ```bash
-     export PROJECT_ID=<your_project_id>
-     export BUCKET_NAME=<your_bucket_name>
-     export FUNCTION_NAME=<your_function_name>
-     export DATASET_ID=<your_dataset_id>
-     export TABLE_ID=<your_table_id>
-     export LOCATION=us-central1
-     ```
-    * Autentícate con tu cuenta de servicio:
-     ```bash
-     gcloud auth activate-service-account --key-file=<path_to_your_credentials_file.json>
-     ```
+1.1. **Authenticate:**
+
+   ```bash
+   gcloud auth login
+   ```
+
+1.2. **Select Project:**
+
+   ```bash
+   gcloud config set project YOUR_PROJECT_ID
+   ```
+
+   Replace `YOUR_PROJECT_ID` with your actual project ID.

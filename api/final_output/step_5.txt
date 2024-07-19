@@ -1,8 +1,12 @@
-**5. Prueba el flujo:**
+**5. Upload File and Test:**
 
-    * Sube un archivo Excel con 30 columnas al bucket de Cloud Storage:
-      ```bash
-      gsutil cp <path_to_your_excel_file.xlsx> gs://$BUCKET_NAME
-      ```
-    * Revisa los logs de la función en la consola de Cloud Functions para verificar que se ejecutó correctamente.
-    * Revisa la tabla en BigQuery para confirmar que los datos se cargaron correctamente. 
+5.1. **Upload Excel File:**
+
+   ```bash
+   gsutil cp archivo_1.xlsx gs://bucket_experiment/
+   ```
+
+5.2. **Monitor Execution:**
+
+   * **Cloud Logging:** Check logs for the `bucket_experiment` function.
+   * **BigQuery:** Verify data is in the `experiment.tabla_experiment` table. 

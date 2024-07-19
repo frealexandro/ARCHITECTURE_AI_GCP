@@ -48,13 +48,13 @@ def run ():
     cloud_storage_manager = CloudStorageManager()
 
     # all: read the first image of the architecture
-    path_image = "/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/images_architectures/arquitectura_inicial.png"
+    path_image = "/home/frealexandro/proyectos_personales/gemini_pro_competition/api/images_architectures/initial_architecture.png"
 
-
+#/home/frealexandro/proyectos_personales/gemini_pro_competition/api/images_architectures/initial_architecture.png
 
     
     # all: use the upload_blob method to upload a file to a bucket
-    cloud_storage_manager.upload_blob("gemini_pro", path_image , 'arquitectura_inicial.png' )
+    cloud_storage_manager.upload_blob("gemini_pro", path_image , 'initial_architecture.png' )
 
     #!################################################################
     #!inicio del proceso de generacion de la descripcion de la arquitectura inicial
@@ -72,7 +72,7 @@ def run ():
 
     
     #all : read description of the example architecture 
-    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_description_architecture.txt', 'r') as f:
+    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/api/examples/general_flow/example_input_description_architecture.txt', 'r') as f:
        exmaple_input_architecture = f.read()
 
     
@@ -138,7 +138,7 @@ input:  Workflow components:
                                                                                     'initial_architecture.png' )
 
     #all : save the description of the output architecture
-    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_description_architecture.txt', 'w') as f:
+    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/api/final_output/output_description_architecture.txt', 'w') as f:
       f.write(output_description_architecture)
 
     print("The first prompt was generated correctly")
@@ -148,7 +148,7 @@ input:  Workflow components:
     #!start of the second prompt to count the steps of the architecture
 
     #all: read the example of the number of steps in the example architecture
-    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_num_steps_architecture.txt', 'r') as f:
+    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/api/examples/general_flow/example_input_num_steps_architecture.txt', 'r') as f:
         example_input_steps_architecture = f.read()
 
 
@@ -165,7 +165,7 @@ input:  Workflow components:
 
     
     #all: save the output steps file
-    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_num_steps_architecture.txt', 'w') as f:
+    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/api/final_output/output_num_steps_architecture.txt', 'w') as f:
         f.write(steps_new_flow)
 
     
@@ -181,7 +181,7 @@ input:  Workflow components:
     #!start the third prompt to get other aspects of the architecture in a file
 
     #all: read the example of other aspects of architecture
-    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/examples/general_flow/example_input_other_aspects_architecture.txt', 'r') as f:
+    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/api/examples/general_flow/example_input_other_aspects_architecture.txt', 'r') as f:
         example_input_aspects_architecture = f.read()
 
     #all: assignment of variables to the prompt to obtain other aspects of the architecture
@@ -197,7 +197,7 @@ input:  Workflow components:
     other_aspects = gemini_operations.get_aspects(template_third_prompt)
 
     #all: save file from other aspects of the architecture
-    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/output_other_aspects_architecture.txt', 'w') as f:
+    with open('/home/frealexandro/proyectos_personales/gemini_pro_competition/api/final_output/output_other_aspects_architecture.txt', 'w') as f:
        f.write(other_aspects)
 
     print("The third prompt was generated correctly")
@@ -227,7 +227,7 @@ input:  Workflow components:
 
         
         #all: save the file of the extracted steps
-        with open(f'/home/frealexandro/projects/Notebooks_2024/GEN_GCP_AI/competition_gemini_pro/final_output/step_{i+1}.txt', 'w') as f:
+        with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/api/final_output/step_{i+1}.txt', 'w') as f:
             f.write(step)
 
         print(f"The flow step number {i+1} was extracted correctly")
@@ -244,27 +244,27 @@ input:  Workflow components:
 
 
         #all: read a text file with the extracted steps       
-        with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/step_{i+1}.txt', 'r') as f:
+        with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/api/final_output/step_{i+1}.txt', 'r') as f:
             step = f.read()
 
 
         #all: Extract the text into a single list with the bash, python and txt tags in the correct order of steps 
         pattern = re.compile(r'```(bash|python|txt)(.*?)```', re.DOTALL)
 
-
+        #all: Add a initial small string that shows if the code block extracted is a bash, python or txt code block
         matches = pattern.findall(step)
-
-
         code_blocks = []
-
         for match in matches:
-            
-            code_blocks.append(match[1].strip())
-            #all: save list to a text file
-            with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/main_function_gemini_pro/final_output/code_blocks_{i}.txt', 'w') as f:
-                f.write(str(code_blocks))
+            block_type = match[0]  #! This will be 'bash', 'python', or 'txt'
+            code_content = match[1].strip()
+            code_blocks.append(f"[{block_type}]\n{code_content}")
+    
+        #all: Save list to a text file
+        with open(f'/home/frealexandro/proyectos_personales/gemini_pro_competition/api/final_output/code_blocks_{i+1}.txt', 'w') as f:
+            for block in code_blocks:
+                f.write(block + "\n\n")  #! Add two newlines for separation between blocks
 
-    print("The code blocks were extracted correctly")
+        print(f"The code blocks {i+1} were extracted correctly")
 
 
 if __name__ == "__main__":

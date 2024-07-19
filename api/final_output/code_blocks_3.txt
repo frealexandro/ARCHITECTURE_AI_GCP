@@ -1,1 +1,61 @@
-['mkdir $FUNCTION_NAME\n     cd $FUNCTION_NAME', 'from google.cloud import storage\n      from google.cloud import bigquery\n      import pandas as pd\n\n      def process_excel(event, context):\n          """Función activada por Cloud Storage al subir un archivo."""\n          file = event\n          bucket_name = file[\'bucket\']\n          file_name = file[\'name\']\n\n          if not file_name.endswith(\'.xlsx\'):\n              print(f"Archivo no procesado: {file_name}")\n              return\n\n          # Descarga el archivo de Cloud Storage\n          storage_client = storage.Client()\n          bucket = storage_client.bucket(bucket_name)\n          blob = bucket.blob(file_name)\n          blob.download_to_filename(\'/tmp/data.xlsx\')\n\n          # Lee el archivo Excel con pandas\n          df = pd.read_excel(\'/tmp/data.xlsx\', engine=\'openpyxl\')\n\n          # Valida que el archivo tenga 30 columnas\n          if len(df.columns) != 30:\n              print(f"Archivo inválido: {file_name} no tiene 30 columnas")\n              return\n\n          # Carga los datos a BigQuery\n          client = bigquery.Client()\n          table_id = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"\n\n          job_config = bigquery.LoadJobConfig(\n              source_format=bigquery.SourceFormat.PARQUET,\n              autodetect=True,\n              write_disposition="WRITE_APPEND"\n          )\n          job = client.load_table_from_dataframe(df, table_id, job_config=job_config)\n          job.result() \n\n          print(f"Archivo {file_name} procesado y cargado a BigQuery")', 'gcloud functions deploy $FUNCTION_NAME \\\n          --runtime python38 \\\n          --trigger-resource gs://$BUCKET_NAME \\\n          --trigger-event google.storage.object.finalize \\\n          --location $LOCATION \\\n          --source .']
+[bash]
+mkdir bucket_experiment && cd bucket_experiment
+
+[python]
+from google.cloud import bigquery
+   from google.cloud import storage
+   import pandas as pd
+   import os
+
+   # Project ID - automatically retrieved from environment
+   project_id = os.environ['GCP_PROJECT']
+   dataset_id = 'experiment'
+   table_id = 'tabla_experiment'
+
+   def process_excel(event, context):
+       """Cloud Function triggered by file upload to bucket.
+       
+       Args:
+           event (dict): Event payload.
+           context (google.cloud.functions.Context): Metadata for the event.
+       """
+       file = event
+       bucket_name = file['bucket']
+       file_name = file['name']
+       
+       # Construct the GCS URI
+       gcs_uri = f'gs://{bucket_name}/{file_name}'
+       
+       # Download the file to a temporary location
+       storage_client = storage.Client()
+       bucket = storage_client.bucket(bucket_name)
+       blob = bucket.blob(file_name)
+       blob.download_to_filename('/tmp/temp.xlsx') 
+
+       # Read the Excel file into a Pandas DataFrame
+       df = pd.read_excel('/tmp/temp.xlsx') 
+       
+       if len(df.columns) != 82:
+           raise ValueError(f"File {file_name} has incorrect number of columns: {len(df.columns)}")
+
+       # Load data into BigQuery
+       bq_client = bigquery.Client()
+       table_ref = bq_client.dataset(dataset_id).table(table_id)
+       job_config = bigquery.LoadJobConfig(
+           source_format=bigquery.SourceFormat.EXCEL,
+           autodetect=True, # Attempt to autodetect schema
+           write_disposition='WRITE_TRUNCATE' # Replace existing data
+       )
+       job = bq_client.load_table_from_dataframe(df, table_ref, job_config=job_config)
+       job.result()  # Wait for job completion
+
+       print(f"File {file_name} processed and loaded into {dataset_id}.{table_id}")
+
+[bash]
+gcloud functions deploy bucket_experiment \
+       --runtime python39 \
+       --trigger-resource gs://bucket_experiment \
+       --trigger-event google.storage.object.finalize \
+       --source . \
+       --entry-point process_excel
+
