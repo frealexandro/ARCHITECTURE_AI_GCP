@@ -4,6 +4,7 @@ from verify_service_account import ServiceAccessChecker
 from tempfile import NamedTemporaryFile
 import shutil
 import json
+import os
 
 app = FastAPI()
 
@@ -14,6 +15,9 @@ async def check_access(credentials_file: UploadFile = File(...)):
     with NamedTemporaryFile(delete=False) as temp_file:
         shutil.copyfileobj(credentials_file.file, temp_file)
         temp_file_path = temp_file.name
+        
+        #all: Load the service account into the system using os, as it is already loaded in the variable key_path
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_file_path
 
     try:
         #! Read the content of the JSON file
@@ -32,7 +36,6 @@ async def check_access(credentials_file: UploadFile = File(...)):
         
         #! Add the project_id to the results
         results['project_id'] = project_id
-        results['project_id'] = project_id
         
         return results
     except json.JSONDecodeError:
@@ -45,3 +48,63 @@ async def check_access(credentials_file: UploadFile = File(...)):
         #! Make sure to delete the temporary file
         import os
         os.unlink(temp_file_path)
+
+
+
+
+
+
+#* ejemplo de como se puede inicializar el proyecto y la ubicacion con las credenciales de la cuenta de servicio
+#* vertexai.init(project="datalake-analytics-339922", location="us-central1", credentials=credentials)
+
+# all: read the first image of the architecture
+path_image = "/home/frealexandro/proyectos_personales/gemini_pro_competition/api/images_architectures/initial_architecture.png"
+
+
+#all: read the flow description of the first architecture
+prompt_user = """ Build a complete workflow in Google Cloud Platform (GCP) using only the
+        command-line terminal, without any enabled APIs. You have a service account with all necessary access rights.
+
+input:  Workflow components:
+        -1.Input file:
+            Name: "archivo_1.xlsx"
+            Content: 82 columns of data
+            Destination: GCP bucket "bucket_experiment"
+
+        -2.GCP Bucket:
+            Name: "bucket_experiment"
+            Region: us-central1
+            Type: Standard
+            Function: Trigger for Cloud Function
+
+        -3.Cloud Function:
+            Name: "bucket_experiment"
+            Region: us-central1
+            Trigger: File upload to the bucket
+            Functions:
+                a) Verify 82 columns in the Excel file
+                b) Process and export data to BigQuery
+
+        -4.BigQuery Table:
+            Name: "tabla_experiment"
+            Dataset: "experiment"
+            Initial state: Empty
+            Update: Replaced with each new processed file
+
+        Data flow:
+            Upload of "archivo_1.xlsx" to "bucket_experiment"
+            Activation of Cloud Function "bucket_experiment"
+            File processing and export to BigQuery
+            Replacement of data in "tabla_experiment"
+            Process repetition with each new Excel file
+
+        Instructions:
+         -Provide the necessary GCP terminal commands to:
+            Create the "bucket_experiment" bucket in the us-central1 region
+            Upload the "archivo_1.xlsx" file to the bucket
+            Create the "bucket_experiment" Cloud Function with the appropriate trigger
+            Deploy the Python code for the Cloud Function that processes the file and exports to BigQuery
+            Create the "experiment" dataset and "tabla_experiment" table in BigQuery
+            Configure the necessary permissions for the Cloud Function to access the bucket and BigQuery
+
+        Note: Ensure all commands are compatible with the GCP terminal and do not require additional APIs.  """
