@@ -19,7 +19,7 @@ class GeminiOperations:
             model = GenerativeModel(self.model)
 
             route_image2 = f"gs://gemini_pro/{name_image}"
-            image1 = Part.from_uri(mime_type="image/png", uri="gs://gemini_pro/ejemplo_arquitectura.png")
+            image1 = Part.from_uri(mime_type="image/png", uri="gs://gemini_pro/example_architecture.png")
             image2 = Part.from_uri(mime_type="image/png", uri=route_image2)
 
             response = model.generate_content([prompt_1, image1, prompt_2, image2, "output:"])
