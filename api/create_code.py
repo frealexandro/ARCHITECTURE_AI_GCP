@@ -44,8 +44,11 @@ class  Createcode:
         #*route of the image of the initial architecture deprecated
         #*/home/frealexandro/proyectos_personales/gemini_pro_competition/api/images_architectures/initial_architecture.png
 
+        #!name of the image of the initial architecture
+        imagen_inicial = 'initial_architecture.png'
+
         # all: use the upload_blob method to upload a file to a bucket
-        cloud_storage_manager.upload_blob("gemini_pro", path_image , 'initial_architecture.png' )
+        cloud_storage_manager.upload_blob("gemini_pro", path_image , imagen_inicial )
 
         #!################################################################
         #!inicio del proceso de generacion de la descripcion de la arquitectura inicial
@@ -74,7 +77,7 @@ class  Createcode:
         #all: function to generate the description of the image of the initial architecture with Gemini
         output_description_architecture = gemini_operations.generate_description_image (prompt_template.template_first_prompt_extract_description ,
                                                                                         template_second_prompt_extract_description ,
-                                                                                        'initial_architecture.png' )
+                                                                                        imagen_inicial )
 
         #all : save the description of the output architecture
         with open( self.output_description_architecture , 'w') as f:

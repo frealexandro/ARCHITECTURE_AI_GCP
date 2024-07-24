@@ -2,20 +2,25 @@
 
 **Prerequisites:**
 
-* You have a GCP project set up.
-* The Google Cloud SDK is installed and configured ([https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)).
-* Your service account has necessary permissions (Storage Admin, Cloud Functions Developer, BigQuery Admin recommended).
-* Your "archivo_1.xlsx" file is ready.
+1. **Google Cloud Platform Account:** With an active account and a created project.
+2. **Google Cloud SDK:** Installed and configured on your local machine. [https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)
+3. **Service accounts:** With roles that allow interaction with Cloud Storage, Cloud Functions, and BigQuery. I recommend "Storage Admin", "Cloud Functions Developer", and "BigQuery Admin" for this tutorial.
+4. **Excel file:** With the data you want to load into BigQuery.
 
 **Recommendations:**
 
-No "Recommendations" section found.
+* **File organization:** It's recommended to create folders within the bucket to organize input, output, and code files.
+* **Error handling:** Implement error control in your Python code to log errors in Cloud Logging.
+* **Testing:** Perform unit and integration tests to validate the correct functioning of the data flow.
 
 **Possible errors:**
 
-No "Possible errors" section found. 
+* **Insufficient permissions:** Ensure that the service account has the necessary permissions for each service.
+* **Missing dependencies:** Verify that the required Python libraries are included in the `requirements.txt` file.
+* **Code errors:** Debug the Python code to identify and correct errors in logic or syntax.
+* **Quota limits:** Be aware of the quota limits for Cloud Functions and BigQuery.
 
 **Testing:**
 
-* **Cloud Logging:** Check logs for the `bucket_experiment` function.
-* **BigQuery:** Verify data is in the `experiment.tabla_experiment` table. 
+* **Verify in Cloud Logging:** Review the function logs to detect errors.
+* **Query the table in BigQuery:** Run an SQL query in BigQuery to verify that the data has been loaded correctly. 

@@ -1,12 +1,19 @@
-**5. Upload File and Test:**
+**5. Test the Flow:**
 
-5.1. **Upload Excel File:**
+Upload  `archivo_1.xlsx` to the bucket at the path `gs://bucket_experiment/`. The Cloud Function will automatically trigger, process the file, and load the data into the BigQuery table.
 
-   ```bash
-   gsutil cp archivo_1.xlsx gs://bucket_experiment/
-   ```
+```bash
+gsutil cp archivo_1.xlsx gs://bucket_experiment/
+```
 
-5.2. **Monitor Execution:**
+**Testing:**
 
-   * **Cloud Logging:** Check logs for the `bucket_experiment` function.
-   * **BigQuery:** Verify data is in the `experiment.tabla_experiment` table. 
+* **Verify in Cloud Logging:** Review the function logs to detect errors.
+* **Query the table in BigQuery:** Run an SQL query in BigQuery to verify that the data has been loaded correctly.
+
+**Remember:**
+
+* **Security:**  Use the principle of least privilege when granting roles to the service account.
+* **Monitoring:**  Set up alerts to monitor the functioning of the data flow.
+
+This automated data flow will allow you to efficiently process and analyze data from Excel files in Google Cloud Platform.

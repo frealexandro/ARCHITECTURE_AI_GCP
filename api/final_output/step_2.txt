@@ -1,7 +1,7 @@
-**2. Cloud Storage Setup:**
+**2. Cloud Storage:**
 
-2.1. **Create Bucket:**
+2.1 **Create a bucket:**  Create a bucket to store the Excel file and the function code.
 
-   ```bash
-   gsutil mb -l us-central1 gs://bucket_experiment
-   ```
+```bash
+gsutil mb -l us-central1 gs://bucket_experiment
+```

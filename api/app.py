@@ -82,6 +82,8 @@ async def upload_image_and_prompt(image: UploadFile = File(...), prompt: str = F
     #! Create an object of the Createcode class
     create_code = Createcode()
 
+    print(prompt)
+
     #! Invoke the create_code method to generate the code
     mensaje_de_exito = create_code.create_code(f"./images_architectures/{file_name}", prompt)
 

@@ -1,15 +1,13 @@
-**1. Prepare Your Environment:**
+**1. Initial Configuration:**
 
-1.1. **Authenticate:**
+1.1. **Authentication:** Log in to your GCP account from the terminal.
 
-   ```bash
-   gcloud auth login
-   ```
+```bash
+gcloud auth login
+```
 
-1.2. **Select Project:**
+1.2. **Select the project:**  Select the project you want to work on.
 
-   ```bash
-   gcloud config set project YOUR_PROJECT_ID
-   ```
-
-   Replace `YOUR_PROJECT_ID` with your actual project ID.
+```bash
+gcloud config set project your-project-id
+```

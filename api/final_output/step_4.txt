@@ -1,11 +1,35 @@
-**4. BigQuery Configuration:**
+**4. BigQuery:**
 
-4.1. **Create Dataset:**
+4.1 **Create a dataset:** If you don't have one yet, create a dataset in BigQuery to store the table.
 
-   ```bash
-   bq --location=us mk experiment
-   ```
+```bash
+bq --location=us mk experiment
+```
 
-4.2. **Create Table (Initially Empty):** 
+4.2 **Create a blank table**
 
-   We will let BigQuery autodetect the schema from the Excel file.  There's no need to create a table structure beforehand when using `autodetect=True` in the load job configuration. 
+4.2.1 **Create a blank file to define the blank schema**
+
+```bash
+touch schema.json
+```
+
+4.2 **Create a table with blank schema**
+
+```bash
+bq mk --table \
+  experiment.table_experiment \
+  schema.json
+```
+
+4.3 **Grant permissions to the Cloud Function's service account:** Replace `<SERVICE_ACCOUNT_EMAIL>` with the email address of the service account used to deploy the Cloud Function.
+
+```bash
+bq datasets add-iam-policy-binding experiment \
+ --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" \
+ --role="roles/bigquery.dataEditor" 
+
+gsutil iam ch \
+    serviceAccount:<SERVICE_ACCOUNT_EMAIL>:roles/storage.objectViewer \
+    gs://bucket_experiment 
+```

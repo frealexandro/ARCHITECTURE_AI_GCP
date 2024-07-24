@@ -146,7 +146,7 @@ touch schema.json
 
 ```bash
 bq mk --table \
-  experiment.tabla_experiment \
+  experiment.table_experiment \
   schema.json
 ```
 
@@ -157,7 +157,7 @@ Replace `<DATASET_LOCATION>` with the location of the dataset (e.g., `US`) and `
 Upload a new Excel file to the bucket at the path `gs://bucket_experiment/`. The Cloud Function will automatically trigger, process the file, and load the data into the BigQuery table.
 
 ```bash
-gsutil cp archivo_1.xlsx gs://bucket_experiment/
+gsutil cp file.xlsx gs://bucket_experiment/
 ```
 
 **Testing:**
