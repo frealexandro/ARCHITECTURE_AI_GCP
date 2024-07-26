@@ -1,7 +1,7 @@
 # Use the official Python image from the Docker Hub
-#FROM amazon/aws-lambda-python:3.8
+FROM python:3.10
 
-FROM jupyter/scipy-notebook
+#FROM jupyter/scipy-notebook
 # Set the working directory
 WORKDIR /app
 
