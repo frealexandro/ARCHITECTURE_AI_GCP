@@ -7,6 +7,7 @@ import shutil
 import json
 import uuid
 import os
+import uvicorn
 
 
 #all: object to check the access of the service account
@@ -89,8 +90,6 @@ async def upload_image_and_prompt(image: UploadFile = File(...), prompt: str = F
 
     #! Return the route or URL to the image and the processed prompt
     return mensaje_de_exito
-
-
 
 
 
