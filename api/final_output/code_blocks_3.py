@@ -1,4 +1,3 @@
-[python]
 from google.cloud import bigquery
 from google.cloud import storage
 import pandas as pd
@@ -43,18 +42,3 @@ def process_excel(event, context):
     job.result()  # Wait for the load to complete
 
     print(f"File {file_name} processed and loaded into BigQuery.")
-
-[txt]
-google-cloud-bigquery
-google-cloud-storage
-pandas
-openpyxl
-
-[bash]
-gcloud functions deploy bucket_experimental \
-  --runtime python39 \
-  --trigger-resource gs://bucket_experimental \
-  --trigger-event google.storage.object.finalize \
-  --source . \
-  --entry-point=process_excel
-

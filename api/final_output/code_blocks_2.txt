@@ -1,3 +1,3 @@
 [bash]
-gsutil mb -l us-central1 gs://bucket_experiment
+gsutil mb -l us-central1 gs://bucket_experimental
 

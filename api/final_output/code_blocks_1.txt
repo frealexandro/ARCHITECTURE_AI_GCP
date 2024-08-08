@@ -1,6 +1,3 @@
 [bash]
-gcloud auth login
-
-[bash]
-gcloud config set project your-project-id
+gcloud config set project datalake-analytics-339922
 

@@ -1,5 +1,5 @@
 [bash]
-bq --location=us mk experiment
+bq --location=us mk experimental
 
 [bash]
 touch schema.json
@@ -9,12 +9,4 @@ bq mk --table \
   experiment.table_experiment \
   schema.json
 
-[bash]
-bq datasets add-iam-policy-binding experiment \
- --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" \
- --role="roles/bigquery.dataEditor" 
-
-gsutil iam ch \
-    serviceAccount:<SERVICE_ACCOUNT_EMAIL>:roles/storage.objectViewer \
-    gs://bucket_experiment
 
