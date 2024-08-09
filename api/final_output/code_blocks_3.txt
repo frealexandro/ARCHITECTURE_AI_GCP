@@ -5,8 +5,8 @@ import pandas as pd
 import os
 
 PROJECT_ID = os.environ['GCP_PROJECT'] # Automatically gets the project ID
-DATASET_ID = 'experiment'
-TABLE_ID = 'tabla_experiment'
+DATASET_ID = 'experimental'
+TABLE_ID = 'tabla_experimental'
 
 def process_excel(event, context):
     # Get the information of the uploaded file

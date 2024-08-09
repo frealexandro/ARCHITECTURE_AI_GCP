@@ -6,7 +6,6 @@ touch schema.json
 
 [bash]
 bq mk --table \
-  experiment.table_experiment \
-  schema.json
+  experimental.table_experimental
 
 
